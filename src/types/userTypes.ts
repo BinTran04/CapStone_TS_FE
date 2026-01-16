@@ -20,3 +20,12 @@ export interface UserProfile {
   email: string;
   chiTietKhoaHocGhiDanh: CourseUser[];
 }
+
+export interface UserAdmin {
+  taiKhoan: string;
+  hoTen: string;
+  email: string;
+  soDt: string;
+  maLoaiNguoiDung: "GV" | "HV";
+  matKhau?: string;
+}

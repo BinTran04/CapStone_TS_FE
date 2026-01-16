@@ -6,8 +6,8 @@ export interface CourseCreator {
 }
 
 export interface CourseCategory {
-  maDanhMucKhoahoc: string;
-  tenDanhMucKhoaHoc: string;
+  maDanhMuc: string;
+  tenDanhMuc: string;
 }
 
 export interface Course {

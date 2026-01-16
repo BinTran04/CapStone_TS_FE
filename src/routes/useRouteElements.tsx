@@ -20,6 +20,11 @@ import Dashboard from "../pages/Admin/Dashboard/Dashboard";
 import UserManagement from "../pages/Admin/UserManagement/UserManagement";
 import CourseManagement from "../pages/Admin/CourseManagement/CourseManagement";
 import AdminGuard from "./AdminGuard";
+import TransactionManagement from "../pages/Admin/Transaction/TransactionManagement";
+import ReportAnalytics from "../pages/Admin/Report/ReportAnalytics";
+import SystemSettings from "../pages/Admin/Settings/SystemSettings";
+import InstructorManagement from "../pages/Admin/Instructor/InstructorManagement";
+import RoleManagement from "../pages/Admin/Role/RoleManagement";
 
 const useRouteElements = () => {
   const routeElements = useRoutes([
@@ -74,6 +79,26 @@ const useRouteElements = () => {
             {
               path: "quan-ly-khoa-hoc",
               element: <CourseManagement />,
+            },
+            {
+              path: "quan-ly-giao-dich",
+              element: <TransactionManagement />,
+            },
+            {
+              path: "bao-cao",
+              element: <ReportAnalytics />,
+            },
+            {
+              path: "cai-dat",
+              element: <SystemSettings />,
+            },
+            {
+              path: "quan-ly-giang-vien",
+              element: <InstructorManagement />,
+            },
+            {
+              path: "phan-quyen",
+              element: <RoleManagement />,
             },
           ],
         },

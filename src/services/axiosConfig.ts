@@ -9,7 +9,7 @@ export const http = axios.create({
   baseURL: BASE_URL,
   timeout: 30000,
   headers: {
-    "Content-Type": "application/json",
+    // "Content-Type": "application/json",
     TokenCybersoft: TOKEN_CYBERSOFT,
   },
 });
@@ -28,7 +28,7 @@ http.interceptors.request.use(
   }
 );
 
-// Interceptor Request: Xử lý dữ liệu trả về hoặc lỗi
+// Interceptor Response: Xử lý dữ liệu trả về hoặc lỗi
 http.interceptors.response.use(
   (response) => {
     return response;
