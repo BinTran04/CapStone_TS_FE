@@ -10,70 +10,72 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 import { courseService } from "../../services/courseService";
-import { useAppSelector } from "../../store/store";
-import type { Course, CourseCategory } from "./../../types/courseTypes";
+import type { Course, CourseCategory } from "../../types/courseTypes";
 
-interface CouseModalProps {
+interface CourseModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
   currentCourse: Course | null;
 }
 
-const schema = yup
-  .object({
-    maKhoaHoc: yup.string().required("Mã khóa học là bắt buộc"),
-    tenKhoaHoc: yup.string().required("Tên khóa học là bắt buộc"),
-    biDanh: yup.string().required("Bí danh là bắt buộc"),
-    moTa: yup.string().required("Mô tả là bắt buộc"),
-    hinhAnh: yup.mixed().required("Hình ảnh là bắt buộc"),
-    maDanhMucKhoaHoc: yup.string().required("Danh mục là bắt buộc"),
-  })
-  .required();
+const schema = yup.object({
+  maKhoaHoc: yup.string().required("Mã khóa học là bắt buộc"),
+  tenKhoaHoc: yup.string().required("Tên khóa học là bắt buộc"),
+  biDanh: yup.string().required("Bí danh là bắt buộc"),
+  moTa: yup.string().required("Mô tả là bắt buộc"),
+  hinhAnh: yup.mixed().required("Hình ảnh là bắt buộc"),
+  maDanhMucKhoaHoc: yup.string().required("Danh mục là bắt buộc"),
+  ngayTao: yup.string().required("Ngày tạo là bắt buộc"),
+});
 
-const CourseModal: React.FC<CouseModalProps> = ({
+const CourseModal: React.FC<CourseModalProps> = ({
   isOpen,
   onClose,
   onSuccess,
   currentCourse,
 }) => {
-  const { currentUser } = useAppSelector((state) => state.auth);
   const [categories, setCategories] = useState<CourseCategory[]>([]);
   const [fileList, setFileList] = useState<any[]>([]);
 
   const {
+    control,
     register,
     handleSubmit,
-    control,
     reset,
     setValue,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: yupResolver(schema),
-    defaultValues: {
-      maKhoaHoc: "",
-      tenKhoaHoc: "",
-      biDanh: "",
-      moTa: "",
-      maDanhMucKhoaHoc: "",
-    },
   });
 
-  // Lấy danh mục khóa học để đổ vào Select
+  // Lấy danh sách danh mục khi Modal được mount
   useEffect(() => {
-    courseService.getCourseCategories().then((res) => setCategories(res.data));
+    const fetchCategories = async () => {
+      try {
+        const res = await courseService.getCourseCategories();
+        setCategories(res.data);
+      } catch (err) {
+        console.error("Lỗi lấy danh mục", err);
+      }
+    };
+    fetchCategories();
   }, []);
 
-  // Đổ dữ liệu khi sửa
+  // Điền dữ liệu khi Sửa
   useEffect(() => {
     if (currentCourse) {
       setValue("maKhoaHoc", currentCourse.maKhoaHoc);
       setValue("tenKhoaHoc", currentCourse.tenKhoaHoc);
       setValue("biDanh", currentCourse.biDanh);
       setValue("moTa", currentCourse.moTa);
-      setValue("maDanhMucKhoaHoc", currentCourse.danhMucKhoaHoc.maDanhMuc);
+      setValue(
+        "maDanhMucKhoaHoc",
+        currentCourse.danhMucKhoaHoc?.maDanhMucKhoahoc || "",
+      );
+      setValue("ngayTao", currentCourse.ngayTao);
+      setValue("hinhAnh", currentCourse.hinhAnh);
 
-      // Hiển thị ảnh cũ trong Upload component
       setFileList([
         {
           uid: "-1",
@@ -82,69 +84,73 @@ const CourseModal: React.FC<CouseModalProps> = ({
           url: currentCourse.hinhAnh,
         },
       ]);
-      // Bypass validation hình ảnh khi đang sửa
-      setValue("hinhAnh", "old_image");
     } else {
-      reset();
+      reset({
+        maKhoaHoc: "",
+        tenKhoaHoc: "",
+        biDanh: "",
+        moTa: "",
+        maDanhMucKhoaHoc: "",
+        ngayTao: dayjs().format("DD/MM/YYYY"),
+      });
       setFileList([]);
     }
   }, [currentCourse, isOpen, reset, setValue]);
 
-  const onSubmit = async (values: any) => {
-    const formData = new FormData();
-
-    formData.append("maKhoaHoc", values.maKhoaHoc);
-    formData.append("tenKhoaHoc", values.tenKhoaHoc);
-    formData.append("alias", values.biDanh);
-    formData.append("moTa", values.moTa);
-    formData.append("maNhom", "GP01");
-    formData.append("ngayTao", dayjs().format("DD/MM/YYYY"));
-    formData.append("maDanhMucKhoaHoc", values.maDanhMucKhoaHoc);
-    formData.append("taiKhoanNguoiTao", currentUser?.taiKhoan || "");
-    formData.append("luotXem", "0");
-    formData.append("danhGia", "0");
-
-    if (fileList.length > 0 && fileList[0].originFileObj) {
-      formData.append("frm", fileList[0].originFileObj);
-    } else if (currentCourse) {
-    } else {
-      message.error("Vui lòng chọn hình ảnh!");
-      return;
+  // Xử lý Upload ảnh
+  const handleUploadChange = ({ fileList: newFileList }: any) => {
+    setFileList(newFileList);
+    // Nếu có file, set value cho react-hook-form
+    if (newFileList.length > 0 && newFileList[0].originFileObj) {
+      setValue("hinhAnh", newFileList[0].originFileObj);
     }
+  };
+
+  const onSubmit = async (data: any) => {
     try {
+      const formData = new FormData();
+      formData.append("maKhoaHoc", data.maKhoaHoc);
+      formData.append("tenKhoaHoc", data.tenKhoaHoc);
+      formData.append("biDanh", data.biDanh);
+      formData.append("moTa", data.moTa);
+      formData.append("luotXem", "0");
+      formData.append("danhGia", "0");
+      formData.append("maNhom", "GP01");
+      formData.append("ngayTao", data.ngayTao);
+      formData.append("maDanhMucKhoaHoc", data.maDanhMucKhoaHoc);
+      formData.append("taiKhoanNguoiTao", "admin_test");
+
+      // Xử lý file ảnh
+      if (typeof data.hinhAnh === "object") {
+        formData.append("file", data.hinhAnh);
+      } else if (currentCourse) {
+      }
+
       if (currentCourse) {
-        await courseService.updateCourseUpload(formData);
-        message.success("Cập nhật khóa học thành công!");
+        await courseService.updateCourse(formData);
+        message.success("Cập nhật khóa học thành công");
       } else {
-        await courseService.addCourseUpload(formData);
-        message.success("Thêm khóa học thành công!");
+        await courseService.addCourse(formData);
+        message.success("Thêm khóa học thành công");
       }
       onSuccess();
       onClose();
     } catch (error: any) {
-      message.error(error.response?.data || "Có lỗi xảy ra!");
-    }
-  };
-
-  const handleFileChange = ({ fileList }: any) => {
-    setFileList(fileList);
-    if (fileList.length > 0) {
-      setValue("hinhAnh", fileList[0].originFileObj);
-    } else {
-      setValue("hinhAnh", null as any);
+      console.error(error);
+      message.error(error.response?.data || "Có lỗi xảy ra");
     }
   };
 
   return (
     <Modal
-      title={currentCourse ? "Cập Nhật Khóa Học" : "Thêm Khóa Học"}
+      title={currentCourse ? "Cập nhật khóa học" : "Thêm khóa học"}
       open={isOpen}
       onCancel={onClose}
       footer={null}
-      width={800} // Modal to hơn chút cho dễ soạn thảo
-      style={{ top: 20 }}
+      width={800}
+      forceRender
     >
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           {/* Mã khóa học */}
           <div>
@@ -153,13 +159,13 @@ const CourseModal: React.FC<CouseModalProps> = ({
             </label>
             <input
               {...register("maKhoaHoc")}
-              disabled={!!currentCourse} // Không cho sửa mã
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+              disabled={!!currentCourse}
+              className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm ${
+                !!currentCourse ? "bg-gray-100" : "border-gray-300"
+              }`}
             />
             {errors.maKhoaHoc && (
-              <p className="text-red-500 text-xs">
-                {errors.maKhoaHoc.message as string}
-              </p>
+              <p className="text-red-500 text-xs">{errors.maKhoaHoc.message}</p>
             )}
           </div>
 
@@ -170,58 +176,82 @@ const CourseModal: React.FC<CouseModalProps> = ({
             </label>
             <input
               {...register("tenKhoaHoc")}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm"
             />
             {errors.tenKhoaHoc && (
               <p className="text-red-500 text-xs">
-                {errors.tenKhoaHoc.message as string}
+                {errors.tenKhoaHoc.message}
               </p>
             )}
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          {/* Bí danh */}
+          {/* Danh mục */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Bí danh
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Danh mục
             </label>
-            <input
-              {...register("biDanh")}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            <Controller
+              control={control}
+              name="maDanhMucKhoaHoc"
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  className="w-full"
+                  placeholder="Chọn danh mục"
+                  options={categories.map((cat) => ({
+                    value: cat.maDanhMucKhoahoc || cat.maDanhMuc,
+                    label: cat.tenDanhMucKhoaHoc || cat.tenDanhMuc,
+                  }))}
+                />
+              )}
             />
-            {errors.biDanh && (
+            {errors.maDanhMucKhoaHoc && (
               <p className="text-red-500 text-xs">
-                {errors.biDanh.message as string}
+                {errors.maDanhMucKhoaHoc.message}
               </p>
             )}
           </div>
 
-          {/* Danh mục */}
+          {/* Ngày tạo */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Danh mục
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Ngày tạo
             </label>
-            <select
-              {...register("maDanhMucKhoaHoc")}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-            >
-              <option value="">-- Chọn danh mục --</option>
-              {categories.map((cat) => (
-                <option key={cat.maDanhMuc} value={cat.maDanhMuc}>
-                  {cat.tenDanhMuc}
-                </option>
-              ))}
-            </select>
-            {errors.maDanhMucKhoaHoc && (
-              <p className="text-red-500 text-xs">
-                {errors.maDanhMucKhoaHoc.message as string}
-              </p>
+            <Controller
+              control={control}
+              name="ngayTao"
+              render={({ field }) => (
+                <DatePicker
+                  className="w-full"
+                  format="DD/MM/YYYY"
+                  value={field.value ? dayjs(field.value, "DD/MM/YYYY") : null}
+                  onChange={(date, dateString) => field.onChange(dateString)}
+                />
+              )}
+            />
+            {errors.ngayTao && (
+              <p className="text-red-500 text-xs">{errors.ngayTao.message}</p>
             )}
           </div>
         </div>
 
-        {/* Upload Hình Ảnh */}
+        {/* Bí danh */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Bí danh
+          </label>
+          <input
+            {...register("biDanh")}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm"
+          />
+          {errors.biDanh && (
+            <p className="text-red-500 text-xs">{errors.biDanh.message}</p>
+          )}
+        </div>
+
+        {/* Hình ảnh */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Hình ảnh
@@ -229,8 +259,8 @@ const CourseModal: React.FC<CouseModalProps> = ({
           <Upload
             listType="picture-card"
             fileList={fileList}
-            onChange={handleFileChange}
-            beforeUpload={() => false} // Chặn auto upload
+            onChange={handleUploadChange}
+            beforeUpload={() => false}
             maxCount={1}
           >
             <div>
@@ -263,9 +293,7 @@ const CourseModal: React.FC<CouseModalProps> = ({
             )}
           />
           {errors.moTa && (
-            <p className="text-red-500 text-xs">
-              {errors.moTa.message as string}
-            </p>
+            <p className="text-red-500 text-xs">{errors.moTa.message}</p>
           )}
         </div>
 
@@ -283,7 +311,7 @@ const CourseModal: React.FC<CouseModalProps> = ({
             disabled={isSubmitting}
             className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
           >
-            {currentCourse ? "Cập nhật" : "Thêm mới"}
+            {isSubmitting ? "Đang xử lý..." : "Lưu"}
           </button>
         </div>
       </form>

@@ -48,7 +48,7 @@ const TransactionManagement: React.FC = () => {
     const newData = data.map((item) =>
       item.id === selectedTx.id
         ? { ...item, status: "Refunded" as const }
-        : item
+        : item,
     );
     setData(newData);
     message.success(`Đã hoàn tiền cho giao dịch ${selectedTx.id}`);
@@ -63,7 +63,6 @@ const TransactionManagement: React.FC = () => {
     return matchSearch && matchStatus;
   });
 
-  // CẤU HÌNH CỘT BẢNG
   const columns: ColumnsType<Transaction> = [
     {
       title: "Mã Giao Dịch",
@@ -207,7 +206,7 @@ const TransactionManagement: React.FC = () => {
         </Col>
       </Row>
 
-      {/* THANH CÔNG CỤ & BẢNG */}
+      {/* THANH CÔNG CỤ VÀ BẢNG */}
       <Card title="Lịch sử giao dịch" bordered={false} className="shadow-sm">
         <div className="flex justify-between mb-4">
           <Input
@@ -237,7 +236,7 @@ const TransactionManagement: React.FC = () => {
         />
       </Card>
 
-      {/* MODAL HÓA ĐƠN (INVOICE) */}
+      {/* MODAL HÓA ĐƠN */}
       <Modal
         title="Chi tiết hóa đơn"
         open={isInvoiceOpen}

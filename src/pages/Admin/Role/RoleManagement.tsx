@@ -38,16 +38,14 @@ const RoleManagement: React.FC = () => {
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
   const [form] = Form.useForm();
 
-  // --- LOGIC HANDLE ---
   const handleEdit = (role: Role) => {
     setEditingRole(role);
     // Nếu là super admin, check hết, ngược lại map đúng key
     if (role.permissions.includes("all")) {
-      // Logic giả định check hết
       setCheckedKeys(
         permissionTree.flatMap((p) =>
-          p.children ? p.children.map((c) => c.key) : [p.key]
-        )
+          p.children ? p.children.map((c) => c.key) : [p.key],
+        ),
       );
     } else {
       setCheckedKeys(role.permissions);
@@ -76,7 +74,7 @@ const RoleManagement: React.FC = () => {
         const updatedRoles = roles.map((r) =>
           r.id === editingRole.id
             ? { ...r, ...values, permissions: newPermissions }
-            : r
+            : r,
         );
         setRoles(updatedRoles);
         message.success("Cập nhật vai trò thành công!");
@@ -101,7 +99,6 @@ const RoleManagement: React.FC = () => {
     message.success("Đã xóa vai trò");
   };
 
-  // COLUMNS
   const columns: ColumnsType<Role> = [
     {
       title: "Tên Vai trò",

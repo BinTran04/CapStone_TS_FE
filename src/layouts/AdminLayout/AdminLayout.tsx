@@ -73,47 +73,46 @@ const AdminLayout: React.FC = () => {
       onClick: () => navigate("/admin/dashboard"),
     },
     {
-      key: "/admin/quan-ly-nguoi-dung",
+      key: "/admin/users",
       icon: <UserOutlined />,
       label: "Quản lý người dùng",
-      onClick: () => navigate("/admin/quan-ly-nguoi-dung"),
+      onClick: () => navigate("/admin/users"),
     },
-
     {
-      key: "/admin/quan-ly-giang-vien",
+      key: "/admin/instructors",
       icon: <TeamOutlined />,
       label: "Quản lý giảng viên",
-      onClick: () => navigate("/admin/quan-ly-giang-vien"),
+      onClick: () => navigate("/admin/instructors"),
     },
     {
-      key: "/admin/quan-ly-khoa-hoc",
+      key: "/admin/courses",
       icon: <ReadOutlined />,
       label: "Quản lý khóa học",
-      onClick: () => navigate("/admin/quan-ly-khoa-hoc"),
+      onClick: () => navigate("/admin/courses"),
     },
     {
-      key: "/admin/quan-ly-giao-dich",
+      key: "/admin/transactions",
       icon: <DollarOutlined />,
       label: "Quản lý giao dịch",
-      onClick: () => navigate("/admin/quan-ly-giao-dich"),
+      onClick: () => navigate("/admin/transactions"),
     },
     {
-      key: "/admin/bao-cao",
+      key: "/admin/analytics",
       icon: <LineChartOutlined />,
       label: "Báo cáo & Phân tích",
-      onClick: () => navigate("/admin/bao-cao"),
+      onClick: () => navigate("/admin/analytics"),
     },
     {
-      key: "/admin/cai-dat",
-      icon: <ToolOutlined />,
-      label: "Cài đặt hệ thống",
-      onClick: () => navigate("/admin/cai-dat"),
-    },
-    {
-      key: "/admin/phan-quyen",
+      key: "/admin/roles",
       icon: <SafetyCertificateOutlined />,
       label: "Hệ thống phân quyền",
-      onClick: () => navigate("/admin/phan-quyen"),
+      onClick: () => navigate("/admin/roles"),
+    },
+    {
+      key: "/admin/settings",
+      icon: <ToolOutlined />,
+      label: "Cài đặt hệ thống",
+      onClick: () => navigate("/admin/settings"),
     },
   ];
 
@@ -158,9 +157,7 @@ const AdminLayout: React.FC = () => {
             className="p-0 shadow-sm flex justify-between items-center px-6"
             style={{ background: isDarkMode ? "#001529" : "#fff" }}
           >
-            {/* Thanh Search Global */}
             <div className="w-1/3">
-              {/* SỬA LỖI: bordered={false} -> variant="borderless" */}
               <Input
                 prefix={<SearchOutlined className="text-gray-400" />}
                 placeholder="Tìm kiếm bất cứ thứ gì..."
@@ -171,6 +168,7 @@ const AdminLayout: React.FC = () => {
 
             {/* Các công cụ góc phải */}
             <div className="flex items-center space-x-6">
+              {/* Nút Dark Mode */}
               <Button
                 type="text"
                 icon={
@@ -183,6 +181,7 @@ const AdminLayout: React.FC = () => {
                 onClick={() => setIsDarkMode(!isDarkMode)}
               />
 
+              {/* Thông báo */}
               <Badge count={5} size="small">
                 <Button
                   type="text"
@@ -190,6 +189,7 @@ const AdminLayout: React.FC = () => {
                 />
               </Badge>
 
+              {/* Profile User */}
               <div className="flex items-center cursor-pointer hover:opacity-80 transition-opacity">
                 <Dropdown menu={userMenu} placement="bottomRight" arrow>
                   <div className="flex items-center">

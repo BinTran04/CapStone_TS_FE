@@ -1,3 +1,4 @@
+// Định nghĩa người tạo khóa học
 export interface CourseCreator {
   taiKhoan: string;
   hoTen: string;
@@ -6,10 +7,14 @@ export interface CourseCreator {
 }
 
 export interface CourseCategory {
-  maDanhMuc: string;
-  tenDanhMuc: string;
+  maDanhMuc?: string;
+  tenDanhMuc?: string;
+
+  maDanhMucKhoahoc?: string;
+  tenDanhMucKhoaHoc?: string;
 }
 
+// Định nghĩa khóa học
 export interface Course {
   maKhoaHoc: string;
   biDanh: string;

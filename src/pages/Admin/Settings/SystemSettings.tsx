@@ -15,6 +15,8 @@ import {
   Typography,
   Collapse,
   Divider,
+  List,
+  Modal,
 } from "antd";
 import {
   UploadOutlined,
@@ -24,9 +26,13 @@ import {
   BgColorsOutlined,
   LayoutOutlined,
   CheckCircleOutlined,
+  EditOutlined,
 } from "@ant-design/icons";
 import type { Color } from "antd/es/color-picker";
-import { initialEmails } from "./../../../mockData/mockData";
+import {
+  initialEmails,
+  type EmailTemplate,
+} from "./../../../mockData/mockData";
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -35,6 +41,7 @@ const { Panel } = Collapse;
 const SystemSettings: React.FC = () => {
   const [form] = Form.useForm();
   const [primaryColor, setPrimaryColor] = useState<string>("#4f46e5");
+
   const [landingPreview, setLandingPreview] = useState({
     heroTitle: "Học Lập Trình Để Đi Làm",
     heroSubtitle: "Cam kết đầu ra - Thực chiến dự án - Mentor tận tâm",
@@ -42,175 +49,162 @@ const SystemSettings: React.FC = () => {
     showFAQ: true,
   });
 
+  const [emailTemplates, setEmailTemplates] =
+    useState<EmailTemplate[]>(initialEmails);
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
+  const [editingEmail, setEditingEmail] = useState<EmailTemplate | null>(null);
+
+  // Hàm lưu chung
   const handleSave = () => {
     message.loading({ content: "Đang lưu cấu hình...", key: "save" });
     setTimeout(() => {
-      message.success({ content: "Lưu cài đặt thành công!", key: "save" });
+      message.success({ content: "Lưu cấu hình thành công!", key: "save" });
     }, 1000);
   };
 
-  // BRANDING
   const BrandingSettings = () => (
     <Form
       layout="vertical"
+      form={form}
       initialValues={{
-        siteName: "CyberSoft Academy",
-        domain: "cybersoft.edu.vn",
+        siteName: "CyberSoft Learning",
+        siteDesc: "Hệ thống đào tạo lập trình hàng đầu",
       }}
     >
       <Row gutter={24}>
-        <Col span={16}>
-          <Card
-            title="Thông tin chung"
-            variant="borderless"
-            className="shadow-sm mb-6"
-          >
-            <Form.Item label="Tên hệ thống" name="siteName">
-              <Input size="large" prefix={<GlobalOutlined />} />
-            </Form.Item>
-            <Form.Item label="Tên miền (Domain)" name="domain">
-              <Input size="large" addonBefore="https://" />
-            </Form.Item>
-            <Form.Item label="Mô tả SEO (Meta Description)">
-              <TextArea
-                rows={3}
-                placeholder="Mô tả ngắn về website hiển thị trên Google..."
-              />
-            </Form.Item>
-          </Card>
-
-          <Card
-            title="Giao diện & Màu sắc"
-            variant="borderless"
-            className="shadow-sm"
-          >
-            <div className="flex items-center gap-8">
-              <Form.Item label="Màu chủ đạo (Primary Color)" className="mb-0">
-                <ColorPicker
-                  showText
-                  value={primaryColor}
-                  onChange={(color: Color) =>
-                    setPrimaryColor(color.toHexString())
-                  }
-                />
-              </Form.Item>
-              <div className="flex-1 p-4 rounded-lg border bg-gray-50 flex items-center gap-3">
-                <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
-                  style={{ backgroundColor: primaryColor }}
-                >
-                  Logo
-                </div>
-                <div>
-                  <div style={{ color: primaryColor }} className="font-bold">
-                    Tiêu đề mẫu
-                  </div>
-                  <Button
-                    type="primary"
-                    style={{ backgroundColor: primaryColor }}
-                  >
-                    Nút bấm mẫu
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </Card>
+        <Col span={12}>
+          <Form.Item label="Tên Website" name="siteName">
+            <Input size="large" />
+          </Form.Item>
+          <Form.Item label="Mô tả SEO" name="siteDesc">
+            <TextArea rows={4} />
+          </Form.Item>
         </Col>
-
-        <Col span={8}>
-          <Card
-            title="Logo & Favicon"
-            variant="borderless"
-            className="shadow-sm text-center"
-          >
-            <div className="mb-6">
-              <p className="mb-2 font-medium">Logo Website</p>
-              <Upload
-                listType="picture-card"
-                showUploadList={false}
-                maxCount={1}
-              >
-                <div>
-                  <UploadOutlined />
-                  <div className="mt-2">Upload</div>
-                </div>
+        <Col span={12}>
+          <Form.Item label="Logo">
+            <div className="flex items-center gap-4">
+              <div className="w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center border border-dashed border-gray-300">
+                <img
+                  src="https://cybersoft.edu.vn/wp-content/uploads/2022/10/cyber-logo-white.png" // Ảnh demo
+                  alt="Logo"
+                  className="max-w-full max-h-full p-2 object-contain bg-black"
+                />
+              </div>
+              <Upload>
+                <Button icon={<UploadOutlined />}>Tải logo mới</Button>
               </Upload>
             </div>
-            <Divider />
-            <div>
-              <p className="mb-2 font-medium">Favicon (Icon tab trình duyệt)</p>
-              <Upload
-                listType="picture-circle"
-                showUploadList={false}
-                maxCount={1}
-              >
-                <div>
-                  <UploadOutlined />
-                </div>
-              </Upload>
-            </div>
-          </Card>
+          </Form.Item>
+          <Form.Item label="Màu chủ đạo">
+            <ColorPicker
+              showText
+              value={primaryColor}
+              onChange={(value: Color, hex: string) => setPrimaryColor(hex)}
+            />
+          </Form.Item>
         </Col>
       </Row>
     </Form>
   );
 
-  // CẤU HÌNH EMAIL
+  const handleEditEmail = (template: EmailTemplate) => {
+    setEditingEmail(template);
+    setIsEmailModalOpen(true);
+  };
+
+  const handleToggleEmail = (id: string, checked: boolean) => {
+    const newEmails = emailTemplates.map((e) =>
+      e.id === id ? { ...e, isActive: checked } : e,
+    );
+    setEmailTemplates(newEmails);
+    message.success(`Đã ${checked ? "bật" : "tắt"} mẫu email này`);
+  };
+
   const EmailSettings = () => (
-    <Card variant="borderless" className="shadow-sm">
-      <div className="mb-4 bg-blue-50 p-4 rounded border border-blue-100 text-blue-700">
-        <MailOutlined className="mr-2" />
-        Sử dụng các biến sau để cá nhân hóa email: <b>{`{userName}`}</b>,{" "}
-        <b>{`{courseName}`}</b>, <b>{`{link}`}</b>.
+    <div>
+      <div className="mb-4 flex justify-between items-center">
+        <Text type="secondary">
+          Quản lý các mẫu email gửi tự động cho học viên
+        </Text>
       </div>
 
-      <Collapse defaultActiveKey={["welcome"]} ghost>
-        {initialEmails.map((email) => (
-          <Panel
-            header={
-              <div className="flex justify-between items-center w-full">
-                <span className="font-medium text-lg">{email.name}</span>
+      <List
+        grid={{ gutter: 16, column: 1 }}
+        dataSource={emailTemplates}
+        renderItem={(item) => (
+          <List.Item>
+            <Card
+              size="small"
+              title={
+                <span className="font-bold text-indigo-700">{item.type}</span>
+              }
+              extra={
                 <Switch
-                  defaultChecked={email.active}
                   checkedChildren="Bật"
                   unCheckedChildren="Tắt"
-                  onClick={(_, e) => e.stopPropagation()}
+                  checked={item.isActive}
+                  onChange={(checked) => handleToggleEmail(item.id, checked)}
                 />
+              }
+              actions={[
+                <Button
+                  type="link"
+                  icon={<EditOutlined />}
+                  onClick={() => handleEditEmail(item)}
+                >
+                  Chỉnh sửa nội dung
+                </Button>,
+              ]}
+            >
+              <div className="text-gray-600 mb-2">
+                <strong>Tiêu đề:</strong> {item.subject}
               </div>
-            }
-            key={email.key}
-          >
-            <Form layout="vertical">
-              <Form.Item label="Tiêu đề Email">
-                <Input defaultValue={email.subject} />
-              </Form.Item>
-              <Form.Item label="Nội dung Email">
-                <TextArea
-                  rows={6}
-                  defaultValue={`Xin chào {userName},\n\nCảm ơn bạn đã tham gia...`}
-                />
-              </Form.Item>
-              <div className="flex justify-end">
-                <Button size="small">Gửi mail test</Button>
+              <div className="text-xs text-gray-400 truncate">
+                {item.content}
               </div>
-            </Form>
-          </Panel>
-        ))}
-      </Collapse>
-    </Card>
+            </Card>
+          </List.Item>
+        )}
+      />
+
+      {/* Modal Chỉnh Sửa Email */}
+      <Modal
+        title={`Chỉnh sửa: ${editingEmail?.type}`}
+        open={isEmailModalOpen}
+        onCancel={() => setIsEmailModalOpen(false)}
+        onOk={() => {
+          message.success("Cập nhật mẫu email thành công!");
+          setIsEmailModalOpen(false);
+        }}
+      >
+        {editingEmail && (
+          <Form layout="vertical" initialValues={editingEmail}>
+            <Form.Item label="Tiêu đề Email" name="subject">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Nội dung (HTML/Text)" name="content">
+              <TextArea rows={6} />
+            </Form.Item>
+            <div className="bg-yellow-50 p-3 rounded text-xs text-yellow-700">
+              Lưu ý: Bạn có thể dùng các biến {`{{name}}`}, {`{{course_name}}`}{" "}
+              để thay thế dữ liệu động.
+            </div>
+          </Form>
+        )}
+      </Modal>
+    </div>
   );
 
-  // LANDING PAGE BUILDER
   const LandingPageSettings = () => (
     <Row gutter={24}>
       <Col span={10}>
         <Card
-          title="Tùy chỉnh nội dung"
+          title="Nội dung Hero Section"
           bordered={false}
-          className="shadow-sm h-full"
+          className="shadow-sm"
         >
           <Form layout="vertical">
-            <Form.Item label="Tiêu đề Hero Section">
+            <Form.Item label="Tiêu đề chính">
               <Input
                 value={landingPreview.heroTitle}
                 onChange={(e) =>
@@ -221,9 +215,8 @@ const SystemSettings: React.FC = () => {
                 }
               />
             </Form.Item>
-            <Form.Item label="Mô tả ngắn">
+            <Form.Item label="Tiêu đề phụ">
               <TextArea
-                rows={3}
                 value={landingPreview.heroSubtitle}
                 onChange={(e) =>
                   setLandingPreview({
@@ -233,59 +226,58 @@ const SystemSettings: React.FC = () => {
                 }
               />
             </Form.Item>
-            <Divider />
-            <div className="flex justify-between items-center mb-4">
-              <span>Hiển thị Đánh giá (Testimonials)</span>
-              <Switch
-                checked={landingPreview.showTestimonials}
-                onChange={(v) =>
-                  setLandingPreview({ ...landingPreview, showTestimonials: v })
-                }
-              />
-            </div>
-            <div className="flex justify-between items-center">
-              <span>Hiển thị FAQ (Hỏi đáp)</span>
-              <Switch
-                checked={landingPreview.showFAQ}
-                onChange={(v) =>
-                  setLandingPreview({ ...landingPreview, showFAQ: v })
-                }
-              />
-            </div>
+            <Form.Item label="Hiển thị section">
+              <div className="flex flex-col gap-2">
+                <div className="flex justify-between">
+                  <span>Đánh giá học viên</span>
+                  <Switch
+                    checked={landingPreview.showTestimonials}
+                    onChange={(v) =>
+                      setLandingPreview({
+                        ...landingPreview,
+                        showTestimonials: v,
+                      })
+                    }
+                  />
+                </div>
+                <div className="flex justify-between">
+                  <span>Câu hỏi thường gặp (FAQ)</span>
+                  <Switch
+                    checked={landingPreview.showFAQ}
+                    onChange={(v) =>
+                      setLandingPreview({ ...landingPreview, showFAQ: v })
+                    }
+                  />
+                </div>
+              </div>
+            </Form.Item>
           </Form>
         </Card>
       </Col>
-
-      {/* LIVE PREVIEW SECTION */}
       <Col span={14}>
         <Card
-          title="Xem trước (Live Preview)"
-          variant="borderless"
-          className="shadow-sm h-full bg-gray-100"
+          title="Xem trước (Preview)"
+          className="bg-gray-50 text-center h-full"
         >
-          <div
-            className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200"
-            style={{ minHeight: "400px" }}
-          >
-            {/* Fake Browser Header */}
-            <div className="bg-gray-100 border-b p-2 flex gap-2">
-              <div className="w-3 h-3 rounded-full bg-red-400"></div>
-              <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
-              <div className="w-3 h-3 rounded-full bg-green-400"></div>
+          <div className="border border-gray-200 bg-white p-6 rounded-lg shadow-sm">
+            {/* Fake Header */}
+            <div className="flex justify-between items-center mb-8 border-b pb-2">
+              <div className="w-20 h-6 bg-indigo-600 rounded"></div>
+              <div className="flex gap-2">
+                <div className="w-16 h-4 bg-gray-200 rounded"></div>
+                <div className="w-16 h-4 bg-gray-200 rounded"></div>
+              </div>
             </div>
 
-            {/* Content Preview */}
-            <div
-              className="p-8 text-center"
-              style={{ backgroundColor: "#f8fafc" }}
-            >
+            {/* Hero Section Preview */}
+            <div className="py-10">
               <h1
-                className="text-2xl font-bold mb-2"
+                className="text-2xl font-bold text-gray-800 mb-2"
                 style={{ color: primaryColor }}
               >
                 {landingPreview.heroTitle}
               </h1>
-              <p className="text-gray-600 mb-6">
+              <p className="text-gray-500 mb-6">
                 {landingPreview.heroSubtitle}
               </p>
               <Button
@@ -297,32 +289,26 @@ const SystemSettings: React.FC = () => {
               </Button>
             </div>
 
+            {/* Testimonials Preview */}
             {landingPreview.showTestimonials && (
-              <div className="p-6 border-t">
-                <h3 className="font-bold mb-2 text-center">Học viên nói gì?</h3>
-                <div className="flex gap-2">
-                  <div className="bg-gray-50 p-2 rounded text-xs flex-1">
-                    "Khóa học rất tuyệt!"
-                  </div>
-                  <div className="bg-gray-50 p-2 rounded text-xs flex-1">
-                    "Mentor nhiệt tình."
+              <div className="mt-8 pt-4 border-t border-dashed">
+                <div className="text-xs text-gray-400 uppercase mb-2">
+                  Đánh giá học viên
+                </div>
+                <div className="flex gap-2 justify-center">
+                  <div className="w-8 h-8 rounded-full bg-gray-300"></div>
+                  <div className="bg-gray-100 p-2 rounded text-xs text-left w-48">
+                    "Khóa học rất tuyệt vời..."
                   </div>
                 </div>
               </div>
             )}
 
+            {/* FAQ Preview */}
             {landingPreview.showFAQ && (
-              <div className="p-6 border-t">
-                <h3 className="font-bold mb-2 text-center">
-                  Câu hỏi thường gặp
-                </h3>
-                <div className="space-y-2">
-                  <div className="border-b pb-1 text-xs text-gray-500">
-                    Người mới bắt đầu học được không?
-                  </div>
-                  <div className="border-b pb-1 text-xs text-gray-500">
-                    Lộ trình học bao lâu?
-                  </div>
+              <div className="mt-4 pt-4 border-t border-dashed">
+                <div className="text-xs text-gray-400 uppercase mb-2">
+                  Lộ trình học bao lâu?
                 </div>
               </div>
             )}
@@ -384,7 +370,12 @@ const SystemSettings: React.FC = () => {
         </Button>
       </div>
 
-      <Tabs defaultActiveKey="1" items={items} type="card" size="large" />
+      <Tabs
+        defaultActiveKey="1"
+        items={items}
+        size="large"
+        className="bg-white p-6 rounded-lg shadow-sm"
+      />
     </div>
   );
 };

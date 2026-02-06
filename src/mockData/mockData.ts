@@ -27,283 +27,399 @@ export interface Transaction {
 
 export const transactionData: Transaction[] = [
   {
-    id: "TRX-2026-001",
-    user: "Trần Quốc Nhựt",
-    courseName: "ReactJS Master Class",
-    amount: 1200000,
-    date: "15/01/2026 10:30",
+    id: "TRX-001",
+    user: "Nguyễn Văn A",
+    courseName: "ReactJS Advanced",
+    amount: 499000,
+    date: "2023-10-25",
     status: "Success",
     paymentMethod: "Momo",
   },
   {
-    id: "TRX-2026-002",
-    user: "Nguyễn Văn A",
-    courseName: "NodeJS & Express",
-    amount: 800000,
-    date: "14/01/2026 14:20",
+    id: "TRX-002",
+    user: "Trần Thị B",
+    courseName: "NodeJS Backend",
+    amount: 699000,
+    date: "2023-10-24",
     status: "Pending",
     paymentMethod: "Bank Transfer",
   },
   {
-    id: "TRX-2026-003",
-    user: "Lê Thị B",
+    id: "TRX-003",
+    user: "Lê Văn C",
     courseName: "Python for AI",
-    amount: 1500000,
-    date: "14/01/2026 09:15",
+    amount: 899000,
+    date: "2023-10-23",
     status: "Failed",
-    paymentMethod: "Stripe",
+    paymentMethod: "ZaloPay",
   },
   {
-    id: "TRX-2026-004",
-    user: "Hoàng C",
-    courseName: "Docker & Kubernetes",
-    amount: 2000000,
-    date: "13/01/2026 16:45",
-    status: "Refunded",
+    id: "TRX-004",
+    user: "Phạm Thị D",
+    courseName: "Fullstack Web",
+    amount: 1200000,
+    date: "2023-10-22",
+    status: "Success",
     paymentMethod: "PayPal",
   },
   {
-    id: "TRX-2026-005",
-    user: "Phạm D",
-    courseName: "HTML5 & CSS3 Basic",
-    amount: 500000,
-    date: "13/01/2026 11:00",
-    status: "Success",
-    paymentMethod: "ZaloPay",
-  },
-];
-
-export const courseRevenueData = [
-  { name: "ReactJS Master", revenue: 50000000, students: 120 },
-  { name: "NodeJS API", revenue: 35000000, students: 95 },
-  { name: "Python AI", revenue: 42000000, students: 80 },
-  { name: "Docker/DevOps", revenue: 28000000, students: 60 },
-  { name: "Java Spring", revenue: 31000000, students: 75 },
-];
-
-export const completionRateData = [
-  { name: "Frontend Basic", rate: 85, dropOut: 15 },
-  { name: "Backend NodeJS", rate: 70, dropOut: 30 },
-  { name: "Fullstack MERN", rate: 60, dropOut: 40 },
-  { name: "Data Science", rate: 50, dropOut: 50 },
-];
-
-export const topStudentsData = [
-  {
-    id: 1,
-    name: "Nguyễn Văn A",
-    courses: 5,
-    score: 9.8,
-    hours: 120,
-    status: "Active",
-  },
-  {
-    id: 2,
-    name: "Trần Thị B",
-    courses: 4,
-    score: 9.5,
-    hours: 98,
-    status: "Active",
-  },
-  {
-    id: 3,
-    name: "Lê Hoàng C",
-    courses: 4,
-    score: 9.2,
-    hours: 85,
-    status: "Away",
-  },
-  {
-    id: 4,
-    name: "Phạm Minh D",
-    courses: 3,
-    score: 8.9,
-    hours: 70,
-    status: "Active",
-  },
-  {
-    id: 5,
-    name: "Võ Tấn E",
-    courses: 3,
-    score: 8.5,
-    hours: 65,
-    status: "Offline",
-  },
-];
-
-export const promoEfficiencyData = [
-  { month: "T1", organic: 4000, promo: 2400 },
-  { month: "T2", organic: 3000, promo: 1398 },
-  { month: "T3", organic: 2000, promo: 9800 },
-  { month: "T4", organic: 2780, promo: 3908 },
-  { month: "T5", organic: 1890, promo: 4800 },
-  { month: "T6", organic: 2390, promo: 3800 },
-];
-
-export const initialEmails = [
-  {
-    key: "welcome",
-    name: "Email Chào mừng",
-    subject: "Chào mừng {userName} gia nhập CyberSoft!",
-    active: true,
-  },
-  {
-    key: "reminder",
-    name: "Nhắc nhở học tập",
-    subject: "Bạn ơi, đừng quên bài học hôm nay nhé!",
-    active: true,
-  },
-  {
-    key: "certificate",
-    name: "Cấp chứng chỉ",
-    subject: "Chúc mừng! Bạn đã hoàn thành khóa học {courseName}",
-    active: false,
+    id: "TRX-005",
+    user: "Hoàng Văn E",
+    courseName: "Java Spring Boot",
+    amount: 799000,
+    date: "2023-10-21",
+    status: "Refunded",
+    paymentMethod: "Stripe",
   },
 ];
 
 export interface Instructor {
-  id: string;
+  id: number;
   name: string;
-  avatar: string;
   email: string;
   phone: string;
+  avatar: string;
   specialty: string;
+  bio: string;
   rating: number;
   totalStudents: number;
   coursesCount: number;
   completionRate: number;
-  joinDate: string;
-  bio: string;
-  performanceData: { month: string; students: number; rating: number }[];
-  courses: { id: string; name: string; students: number; rating: number }[];
+  status: "Active" | "Inactive";
+  performanceData: { month: string; students: number }[];
+  courses: { name: string; students: number; rating: number }[];
 }
 
 export const instructorData: Instructor[] = [
   {
-    id: "GV001",
+    id: 1,
     name: "Trương Tấn Khải",
-    avatar: "https://i.pravatar.cc/150?u=GV001",
-    email: "khaidev@cybersoft.edu.vn",
-    phone: "0909123456",
+    email: "khai.truong@cybersoft.edu.vn",
+    phone: "0901234567",
+    avatar: "https://i.pravatar.cc/150?u=instructor1",
     specialty: "Fullstack Developer",
-    rating: 4.8,
-    totalStudents: 1250,
-    coursesCount: 5,
-    completionRate: 85,
-    joinDate: "12/01/2020",
-    bio: "Chuyên gia ReactJS & NodeJS với 10 năm kinh nghiệm. Mentor nhiệt tình, phong cách giảng dạy thực chiến.",
-    performanceData: [
-      { month: "T1", students: 120, rating: 4.5 },
-      { month: "T2", students: 150, rating: 4.7 },
-      { month: "T3", students: 180, rating: 4.8 },
-      { month: "T4", students: 220, rating: 4.9 },
-    ],
-    courses: [
-      { id: "KH01", name: "ReactJS Master", students: 400, rating: 4.9 },
-      { id: "KH02", name: "NodeJS API", students: 350, rating: 4.7 },
-    ],
-  },
-  {
-    id: "GV002",
-    name: "Đặng Thuyền Vương",
-    avatar: "https://i.pravatar.cc/150?u=GV002",
-    email: "vuongdt@cybersoft.edu.vn",
-    phone: "0912345678",
-    specialty: "Backend / DevOps",
-    rating: 4.5,
-    totalStudents: 980,
-    coursesCount: 3,
-    completionRate: 78,
-    joinDate: "05/05/2021",
-    bio: "Kỹ sư hệ thống tại tập đoàn lớn. Chuyên giảng dạy về Java Spring Boot và Docker/Kubernetes.",
-    performanceData: [
-      { month: "T1", students: 80, rating: 4.2 },
-      { month: "T2", students: 90, rating: 4.3 },
-      { month: "T3", students: 110, rating: 4.5 },
-      { month: "T4", students: 130, rating: 4.6 },
-    ],
-    courses: [
-      { id: "KH03", name: "Java Spring Boot", students: 500, rating: 4.5 },
-      { id: "KH04", name: "Docker Basic", students: 480, rating: 4.4 },
-    ],
-  },
-  {
-    id: "GV003",
-    name: "Nguyễn Thị Thảo",
-    avatar: "https://i.pravatar.cc/150?u=GV003",
-    email: "thaont@cybersoft.edu.vn",
-    phone: "0987654321",
-    specialty: "Data Science / AI",
+    bio: "Giảng viên có 10 năm kinh nghiệm trong lĩnh vực phát triển phần mềm, chuyên sâu về MERN Stack.",
     rating: 4.9,
-    totalStudents: 2100,
-    coursesCount: 8,
-    completionRate: 92,
-    joinDate: "15/08/2019",
-    bio: "Tiến sĩ KHMT, đam mê nghiên cứu AI và Big Data. Giảng viên được yêu thích nhất năm 2025.",
+    totalStudents: 1200,
+    coursesCount: 5,
+    completionRate: 95,
+    status: "Active",
     performanceData: [
-      { month: "T1", students: 300, rating: 4.8 },
-      { month: "T2", students: 350, rating: 4.9 },
-      { month: "T3", students: 400, rating: 4.9 },
-      { month: "T4", students: 450, rating: 5.0 },
+      { month: "T1", students: 120 },
+      { month: "T2", students: 150 },
+      { month: "T3", students: 180 },
+      { month: "T4", students: 220 },
+      { month: "T5", students: 250 },
     ],
     courses: [
-      { id: "KH05", name: "Python for AI", students: 800, rating: 5.0 },
-      { id: "KH06", name: "Machine Learning", students: 600, rating: 4.8 },
+      { name: "ReactJS Masterclass", students: 500, rating: 5.0 },
+      { name: "NodeJS & Express", students: 400, rating: 4.8 },
+      { name: "MongoDB Advanced", students: 300, rating: 4.9 },
+    ],
+  },
+  {
+    id: 2,
+    name: "Nguyễn Thị Minh Hằng",
+    email: "hang.nguyen@cybersoft.edu.vn",
+    phone: "0987654321",
+    avatar: "https://i.pravatar.cc/150?u=instructor2",
+    specialty: "Frontend Specialist",
+    bio: "Chuyên gia UI/UX và Frontend, từng làm việc tại các công ty công nghệ lớn tại Singapore.",
+    rating: 4.8,
+    totalStudents: 850,
+    coursesCount: 3,
+    completionRate: 88,
+    status: "Active",
+    performanceData: [
+      { month: "T1", students: 90 },
+      { month: "T2", students: 110 },
+      { month: "T3", students: 130 },
+      { month: "T4", students: 140 },
+      { month: "T5", students: 160 },
+    ],
+    courses: [
+      { name: "Figma to HTML/CSS", students: 300, rating: 4.7 },
+      { name: "Advanced Tailwind CSS", students: 250, rating: 4.9 },
+      { name: "JavaScript Core", students: 300, rating: 4.8 },
+    ],
+  },
+  {
+    id: 3,
+    name: "Lê Quang Song",
+    email: "song.le@cybersoft.edu.vn",
+    phone: "0912345678",
+    avatar: "https://i.pravatar.cc/150?u=instructor3",
+    specialty: "Backend & DevOps",
+    bio: "Kỹ sư hệ thống với chứng chỉ AWS Solutions Architect Professional.",
+    rating: 4.7,
+    totalStudents: 600,
+    coursesCount: 4,
+    completionRate: 80,
+    status: "Inactive",
+    performanceData: [
+      { month: "T1", students: 50 },
+      { month: "T2", students: 60 },
+      { month: "T3", students: 40 },
+      { month: "T4", students: 30 },
+      { month: "T5", students: 20 },
+    ],
+    courses: [
+      { name: "Docker & Kubernetes", students: 200, rating: 4.6 },
+      { name: "CI/CD with Jenkins", students: 150, rating: 4.5 },
+      { name: "Microservices", students: 250, rating: 4.8 },
     ],
   },
 ];
 
-export interface Permission {
-  key: string;
-  title: string;
-  children?: Permission[];
+export const stats = [
+  { value: "50K+", label: "Học viên" },
+  { value: "200+", label: "Khóa học" },
+  { value: "100+", label: "Giảng viên" },
+  { value: "4.8", label: "Đánh giá" },
+];
+
+export const features = [
+  {
+    icon: "🎓",
+    title: "Học mọi lúc mọi nơi",
+    description:
+      "Truy cập bài giảng 24/7 trên mọi thiết bị, học theo tốc độ của riêng bạn.",
+  },
+  {
+    icon: "🔥",
+    title: "Thực hành dự án thật",
+    description: "Làm dự án thực tế để xây dựng Portfolio cá nhân ấn tượng.",
+  },
+  {
+    icon: "🤝",
+    title: "Cộng đồng & Mentor",
+    description: "Đội ngũ Mentor hỗ trợ 24/7, giải đáp thắc mắc nhiệt tình.",
+  },
+  {
+    icon: "🚀",
+    title: "Cơ hội nghề nghiệp",
+    description:
+      "Kết nối với các doanh nghiệp hàng đầu ngay sau khi tốt nghiệp.",
+  },
+];
+
+export const reviews = [
+  {
+    id: 1,
+    name: "Nguyễn Nhật Minh",
+    role: "Fullstack Dev",
+    avatar: "https://i.pravatar.cc/150?u=1",
+    content: "Khóa học rất thực tế, giúp mình tự tin đi phỏng vấn.",
+    rating: 5,
+  },
+  {
+    id: 2,
+    name: "Trần Thu Hà",
+    role: "Sinh viên",
+    avatar: "https://i.pravatar.cc/150?u=2",
+    content: "Mentor hỗ trợ nhiệt tình, lộ trình rõ ràng.",
+    rating: 5,
+  },
+  {
+    id: 3,
+    name: "Lê Văn Hùng",
+    role: "Fresher",
+    avatar: "https://i.pravatar.cc/150?u=3",
+    content: "Hệ thống bài tập phong phú, rèn tư duy tốt.",
+    rating: 4,
+  },
+  {
+    id: 4,
+    name: "Hoàng Anh",
+    role: "Học viên",
+    avatar: "https://i.pravatar.cc/150?u=4",
+    content: "Khóa học rất thực tế, giảng viên dạy dễ hiểu.",
+    rating: 5,
+  },
+];
+
+export const blogs = [
+  {
+    id: 1,
+    title: "Lộ trình Frontend 2026",
+    image:
+      "https://media.techmaster.vn/api/static/bub3enc51co7s932dsk0/Z6v6s42L",
+    date: "10 Jan 2026",
+  },
+  {
+    id: 2,
+    title: "Tại sao nên học ReactJS?",
+    image:
+      "https://nordiccoder.com/app/uploads/2020/01/reactjs-la-gi-1-scaled.jpg",
+    date: "05 Jan 2026",
+  },
+  {
+    id: 3,
+    title: "Tips phỏng vấn IT hiệu quả",
+    image:
+      "https://topdev.vn/blog/wp-content/uploads/2019/06/cau-hoi-phong-van-it.png",
+    date: "01 Jan 2026",
+  },
+];
+
+export const faqs = [
+  {
+    key: "1",
+    label: "Tôi chưa biết gì về IT có học được không?",
+    children:
+      "Được! Chúng tôi có lộ trình từ Zero dành cho người mới bắt đầu hoàn toàn.",
+  },
+  {
+    key: "2",
+    label: "Khóa học có cấp chứng chỉ không?",
+    children:
+      "Có. Sau khi hoàn thành 100% bài học và project, bạn sẽ nhận được chứng chỉ.",
+  },
+  {
+    key: "3",
+    label: "Hình thức học như thế nào?",
+    children:
+      "Học online qua video quay sẵn kết hợp với livestream mentor hàng tuần.",
+  },
+];
+
+export const MOCK_CHAPTERS = [
+  {
+    id: "chap1",
+    title: "Chương 1: Giới thiệu tổng quan",
+    lessons: [
+      {
+        id: "1",
+        title: "Giới thiệu khóa học & Lộ trình",
+        duration: "05:20",
+        videoId: "x0fSBAgBrO0",
+      },
+      {
+        id: "2",
+        title: "Cài đặt môi trường VS Code",
+        duration: "10:15",
+        videoId: "951830574",
+      },
+      {
+        id: "3",
+        title: "Tư duy lập trình hiện đại",
+        duration: "08:45",
+        videoId: "M62l1xA5k8o",
+      },
+    ],
+  },
+  {
+    id: "chap2",
+    title: "Chương 2: Kiến thức nền tảng",
+    lessons: [
+      {
+        id: "4",
+        title: "Biến và kiểu dữ liệu",
+        duration: "12:30",
+        videoId: "0SJE9dYdpps",
+      },
+      {
+        id: "5",
+        title: "Cấu trúc điều kiện If-Else",
+        duration: "15:00",
+        videoId: "f3zR0nJ9tWw",
+      },
+      {
+        id: "6",
+        title: "Vòng lặp trong thực tế",
+        duration: "11:20",
+        videoId: "3JluqToP5Hg",
+      },
+    ],
+  },
+  {
+    id: "chap3",
+    title: "Chương 3: Xây dựng dự án thực tế",
+    lessons: [
+      {
+        id: "7",
+        title: "Khởi tạo dự án React",
+        duration: "09:10",
+        videoId: "w7ejDZ8SWv8",
+      },
+      {
+        id: "8",
+        title: "Component và Props",
+        duration: "20:05",
+        videoId: "kVeOpcw4GWY",
+      },
+    ],
+  },
+];
+
+export const courseRevenueData = [
+  { name: "ReactJS", revenue: 120000000, profit: 80000000, cost: 40000000 },
+  { name: "NodeJS", revenue: 90000000, profit: 60000000, cost: 30000000 },
+  { name: "Python", revenue: 150000000, profit: 100000000, cost: 50000000 },
+  { name: "Java", revenue: 80000000, profit: 50000000, cost: 30000000 },
+  { name: "DevOps", revenue: 60000000, profit: 30000000, cost: 30000000 },
+  { name: "Flutter", revenue: 75000000, profit: 45000000, cost: 30000000 },
+];
+
+export const completionRateData = [
+  { name: "ReactJS Master", rate: 85 },
+  { name: "NodeJS Advanced", rate: 70 },
+  { name: "Python AI", rate: 60 },
+  { name: "DevOps Zero to Hero", rate: 90 },
+  { name: "AWS Cloud", rate: 75 },
+];
+
+export const topStudentsData = [
+  { id: 1, name: "Nguyễn Văn A", courses: 5, score: 98, status: "Active" },
+  { id: 2, name: "Trần Thị B", courses: 4, score: 95, status: "Active" },
+  { id: 3, name: "Lê Văn C", courses: 4, score: 92, status: "Active" },
+  { id: 4, name: "Phạm Thị D", courses: 3, score: 90, status: "Inactive" },
+  { id: 5, name: "Hoàng Văn E", courses: 3, score: 88, status: "Active" },
+];
+
+export const promoEfficiencyData = [
+  { name: "Tết Sale", usage: 400, sales: 240000000 },
+  { name: "Black Friday", usage: 300, sales: 139800000 },
+  { name: "Summer Sale", usage: 200, sales: 98000000 },
+  { name: "Back to School", usage: 278, sales: 390800000 },
+];
+
+export interface EmailTemplate {
+  id: string;
+  type: string;
+  subject: string;
+  content: string;
+  isActive: boolean;
 }
 
-export const permissionTree: Permission[] = [
+export const initialEmails: EmailTemplate[] = [
   {
-    key: "dashboard",
-    title: "Dashboard",
-    children: [
-      { key: "dashboard.view", title: "Xem thống kê chung" },
-      { key: "dashboard.revenue", title: "Xem doanh thu" },
-    ],
+    id: "WELCOME",
+    type: "Chào mừng thành viên mới",
+    subject: "Chào mừng bạn đến với CyberSoft Learning!",
+    content: "Xin chào {{name}},\n\nCảm ơn bạn đã đăng ký tài khoản...",
+    isActive: true,
   },
   {
-    key: "user",
-    title: "Quản lý Người dùng",
-    children: [
-      { key: "user.view", title: "Xem danh sách" },
-      { key: "user.create", title: "Thêm người dùng" },
-      { key: "user.update", title: "Chỉnh sửa" },
-      { key: "user.delete", title: "Xóa người dùng" },
-      { key: "user.import", title: "Import Excel" },
-    ],
+    id: "RESET_PASS",
+    type: "Khôi phục mật khẩu",
+    subject: "Yêu cầu đặt lại mật khẩu",
+    content: "Xin chào,\n\nBạn vừa yêu cầu đặt lại mật khẩu...",
+    isActive: true,
   },
   {
-    key: "course",
-    title: "Quản lý Khóa học",
-    children: [
-      { key: "course.view", title: "Xem danh sách" },
-      { key: "course.create", title: "Tạo khóa học" },
-      { key: "course.approve", title: "Duyệt khóa học" },
-    ],
+    id: "COURSE_ENROLL",
+    type: "Xác nhận ghi danh",
+    subject: "Ghi danh khóa học thành công",
+    content: "Chúc mừng bạn đã ghi danh thành công khóa học {{course_name}}...",
+    isActive: true,
   },
   {
-    key: "finance",
-    title: "Tài chính & Kế toán",
-    children: [
-      { key: "finance.view", title: "Xem giao dịch" },
-      { key: "finance.refund", title: "Xử lý hoàn tiền" },
-      { key: "finance.export", title: "Xuất báo cáo" },
-    ],
-  },
-  {
-    key: "system",
-    title: "Hệ thống",
-    children: [
-      { key: "system.settings", title: "Cấu hình hệ thống" },
-      { key: "system.roles", title: "Quản lý phân quyền" },
-    ],
+    id: "PAYMENT_SUCCESS",
+    type: "Thanh toán thành công",
+    subject: "Hóa đơn thanh toán #{{order_id}}",
+    content: "Cảm ơn bạn đã thanh toán. Chi tiết đơn hàng của bạn...",
+    isActive: true,
   },
 ];
 
@@ -312,47 +428,93 @@ export interface Role {
   name: string;
   description: string;
   userCount: number;
-  status: "active" | "inactive";
   permissions: string[];
+  isSystem: boolean;
 }
 
 export const initialRoles: Role[] = [
   {
-    id: "SUPER_ADMIN",
+    id: "ADMIN",
     name: "Super Admin",
-    description: "Quyền truy cập toàn bộ hệ thống, không giới hạn.",
-    userCount: 2,
-    status: "active",
+    description: "Quản trị viên cấp cao, toàn quyền hệ thống",
+    userCount: 3,
     permissions: ["all"],
+    isSystem: true,
+  },
+  {
+    id: "MANAGER",
+    name: "Quản lý đào tạo",
+    description: "Quản lý khóa học, giảng viên và học viên",
+    userCount: 5,
+    permissions: [
+      "dashboard.view",
+      "courses.view",
+      "courses.manage",
+      "users.view",
+      "users.manage",
+    ],
+    isSystem: false,
   },
   {
     id: "INSTRUCTOR",
     name: "Giảng viên",
-    description: "Quản lý khóa học cá nhân, xem học viên.",
+    description: "Chỉ được xem và quản lý nội dung khóa học được phân công",
     userCount: 15,
-    status: "active",
-    permissions: ["dashboard.view", "course.view", "course.create"],
+    permissions: ["dashboard.view", "courses.view", "content.manage"],
+    isSystem: false,
   },
   {
-    id: "CSKH",
-    name: "Chăm sóc khách hàng",
-    description: "Hỗ trợ học viên, xem danh sách user, không được xóa.",
-    userCount: 8,
-    status: "active",
-    permissions: ["dashboard.view", "user.view", "user.update"],
+    id: "STUDENT",
+    name: "Học viên",
+    description: "Quyền mặc định khi đăng ký tài khoản",
+    userCount: 1200,
+    permissions: ["profile.view", "learning.access"],
+    isSystem: true,
+  },
+];
+
+export const permissionTree = [
+  {
+    title: "Thống kê (Dashboard)",
+    key: "dashboard",
+    children: [
+      { title: "Xem báo cáo tổng quan", key: "dashboard.view" },
+      { title: "Xem báo cáo doanh thu", key: "dashboard.revenue" },
+    ],
   },
   {
-    id: "ACCOUNTANT",
-    name: "Kế toán",
-    description: "Quản lý doanh thu, hóa đơn, hoàn tiền.",
-    userCount: 3,
-    status: "active",
-    permissions: [
-      "dashboard.view",
-      "dashboard.revenue",
-      "finance.view",
-      "finance.refund",
-      "finance.export",
+    title: "Quản lý người dùng",
+    key: "users",
+    children: [
+      { title: "Xem danh sách", key: "users.view" },
+      { title: "Thêm/Sửa/Xóa người dùng", key: "users.manage" },
+      { title: "Phân quyền (Roles)", key: "users.roles" },
+    ],
+  },
+  {
+    title: "Quản lý khóa học",
+    key: "courses",
+    children: [
+      { title: "Xem danh sách khóa học", key: "courses.view" },
+      { title: "Tạo/Sửa khóa học", key: "courses.manage" },
+      { title: "Duyệt khóa học", key: "courses.approve" },
+      { title: "Quản lý nội dung bài học", key: "content.manage" },
+    ],
+  },
+  {
+    title: "Tài chính",
+    key: "finance",
+    children: [
+      { title: "Xem lịch sử giao dịch", key: "finance.transactions" },
+      { title: "Xử lý hoàn tiền", key: "finance.refund" },
+    ],
+  },
+  {
+    title: "Hệ thống",
+    key: "system",
+    children: [
+      { title: "Cấu hình chung", key: "system.settings" },
+      { title: "Xem Logs", key: "system.logs" },
     ],
   },
 ];

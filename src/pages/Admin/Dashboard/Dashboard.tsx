@@ -35,7 +35,6 @@ const Dashboard: React.FC = () => {
             variant="borderless"
             className="shadow-sm hover:shadow-md transition-shadow"
           >
-            {/* FIX LỖI 1: Đổi valueStyle thành styles={{ content: ... }} */}
             <Statistic
               title="Tổng Doanh Thu"
               value={112893}
@@ -108,7 +107,6 @@ const Dashboard: React.FC = () => {
 
       {/* BIỂU ĐỒ CHÍNH */}
       <Row gutter={16}>
-        {/* Biểu đồ Doanh thu */}
         <Col span={16}>
           <Card
             title="Phân tích Doanh thu & Học viên"
@@ -228,8 +226,8 @@ const Dashboard: React.FC = () => {
                     status === "Success"
                       ? "green"
                       : status === "Pending"
-                      ? "orange"
-                      : "red"
+                        ? "orange"
+                        : "red"
                   }
                 >
                   {status.toUpperCase()}

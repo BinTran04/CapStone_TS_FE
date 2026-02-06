@@ -2,14 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Modal, Button, Select, Table, message, Popconfirm, Tag } from "antd";
 import { DeleteOutlined, UserAddOutlined } from "@ant-design/icons";
 import { userService } from "../../services/userService";
-import { courseService } from "../../services/courseService";
 import type { Course } from "../../types/courseTypes";
 import type { UserAdmin } from "../../types/userTypes";
 
 interface CourseEnrollmentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  course: Course | null; // Khóa học đang được chọn
+  course: Course | null;
 }
 
 const CourseEnrollmentModal: React.FC<CourseEnrollmentModalProps> = ({
@@ -20,7 +19,7 @@ const CourseEnrollmentModal: React.FC<CourseEnrollmentModalProps> = ({
   const [unenrolledUsers, setUnenrolledUsers] = useState<UserAdmin[]>([]);
   const [enrolledStudents, setEnrolledStudents] = useState<UserAdmin[]>([]);
   const [selectedUserAccount, setSelectedUserAccount] = useState<string | null>(
-    null
+    null,
   );
   const [loading, setLoading] = useState(false);
 
@@ -28,20 +27,21 @@ const CourseEnrollmentModal: React.FC<CourseEnrollmentModalProps> = ({
     if (!course) return;
     setLoading(true);
     try {
-      // 1. Lấy danh sách User CHƯA ghi danh vào khóa này
+      // Lấy danh sách User CHƯA ghi danh
       const resUnenrolled = await userService.getUnenrolledUsers(
-        course.maKhoaHoc
+        course.maKhoaHoc,
       );
       setUnenrolledUsers(resUnenrolled.data);
 
-      // 2. Lấy danh sách Học viên ĐÃ ghi danh vào khóa này
-      const resEnrolled = await courseService.getStudentsByCourse(
-        course.maKhoaHoc
+      // Lấy danh sách User ĐÃ ghi danh
+      const resEnrolled = await userService.getEnrolledStudents(
+        course.maKhoaHoc,
       );
       setEnrolledStudents(resEnrolled.data);
     } catch (error) {
       console.error(error);
-      // Không báo lỗi 404 để tránh spam
+      // API có thể trả lỗi nếu danh sách rỗng, et rỗng để không crash
+      setEnrolledStudents([]);
     } finally {
       setLoading(false);
     }
@@ -54,58 +54,61 @@ const CourseEnrollmentModal: React.FC<CourseEnrollmentModalProps> = ({
     }
   }, [isOpen, course]);
 
-  // Ghi danh User vào Khóa học
+  // Xử lý Ghi danh
   const handleRegister = async () => {
-    if (!selectedUserAccount || !course) return;
+    if (!course || !selectedUserAccount) return;
     try {
       await userService.registerCourse({
         maKhoaHoc: course.maKhoaHoc,
         taiKhoan: selectedUserAccount,
       });
-      message.success("Ghi danh thành công!");
+      message.success("Ghi danh thành công");
       fetchEnrollmentData();
       setSelectedUserAccount(null);
     } catch (error: any) {
-      message.error(error.response?.data || "Ghi danh thất bại!");
+      message.error(error.response?.data || "Ghi danh thất bại");
     }
   };
 
-  // Hủy ghi danh (Xóa User khỏi Khóa học)
-  const handleCancel = async (taiKhoan: string) => {
+  // Xử lý Hủy ghi danh
+  const handleDelete = async (userAccount: string) => {
     if (!course) return;
     try {
-      await userService.cancelCourse({
+      await userService.cancelRegistration({
         maKhoaHoc: course.maKhoaHoc,
-        taiKhoan: taiKhoan,
+        taiKhoan: userAccount,
       });
-      message.success("Hủy ghi danh thành công!");
+      message.success("Hủy ghi danh thành công");
       fetchEnrollmentData();
     } catch (error: any) {
-      message.error(error.response?.data || "Hủy thất bại!");
+      message.error(error.response?.data || "Hủy thất bại");
     }
   };
 
   const columns = [
     {
-      title: "STT",
-      key: "stt",
-      render: (_: any, __: any, index: number) => index + 1,
+      title: "Tài khoản",
+      dataIndex: "taiKhoan",
+      key: "taiKhoan",
     },
-    { title: "Tài khoản", dataIndex: "taiKhoan", key: "taiKhoan" },
-    { title: "Họ tên", dataIndex: "hoTen", key: "hoTen" },
     {
-      title: "Thao tác",
+      title: "Họ tên",
+      dataIndex: "hoTen",
+      key: "hoTen",
+    },
+    {
+      title: "Hành động",
       key: "action",
       render: (_: any, record: UserAdmin) => (
         <Popconfirm
-          title="Xóa học viên?"
-          description={`Bạn muốn xóa ${record.hoTen} khỏi khóa học?`}
-          onConfirm={() => handleCancel(record.taiKhoan)}
-          okText="Xóa"
-          cancelText="Hủy"
-          okButtonProps={{ danger: true }}
+          title="Xóa học viên khỏi khóa học?"
+          onConfirm={() => handleDelete(record.taiKhoan)}
+          okText="Có"
+          cancelText="Không"
         >
-          <Button danger size="small" icon={<DeleteOutlined />} />
+          <Button danger icon={<DeleteOutlined />} size="small">
+            Xóa
+          </Button>
         </Popconfirm>
       ),
     },
@@ -113,31 +116,26 @@ const CourseEnrollmentModal: React.FC<CourseEnrollmentModalProps> = ({
 
   return (
     <Modal
-      title={`Quản lý học viên - Khóa: ${course?.tenKhoaHoc}`}
+      title={`Quản lý học viên - ${course?.tenKhoaHoc}`}
       open={isOpen}
       onCancel={onClose}
       footer={null}
       width={800}
     >
       <div className="space-y-6">
-        {/* Phần 1: Chọn User để thêm */}
+        {/* Thêm Học viên */}
         <div className="flex gap-4 items-end border-b pb-6">
           <div className="flex-1">
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Chọn người dùng để ghi danh
+              Thêm học viên
             </label>
             <Select
               className="w-full"
               placeholder="Tìm kiếm tài khoản hoặc họ tên..."
               showSearch
-              optionFilterProp="children"
+              optionFilterProp="label"
               value={selectedUserAccount}
               onChange={(val) => setSelectedUserAccount(val)}
-              filterOption={(input, option) =>
-                (option?.label ?? "")
-                  .toLowerCase()
-                  .includes(input.toLowerCase())
-              }
               options={unenrolledUsers.map((u) => ({
                 value: u.taiKhoan,
                 label: `${u.hoTen} (${u.taiKhoan})`,
@@ -154,7 +152,7 @@ const CourseEnrollmentModal: React.FC<CourseEnrollmentModalProps> = ({
           </Button>
         </div>
 
-        {/* Phần 2: Danh sách Học viên hiện tại */}
+        {/* Danh sách Học viên hiện tại */}
         <div>
           <h3 className="text-lg font-medium mb-3">
             Danh sách học viên ({enrolledStudents.length})

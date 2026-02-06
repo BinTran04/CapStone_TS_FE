@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Modal, Button, Select, Table, message, Popconfirm, Tag } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { userService } from "../../services/userService";
-import type { UserAdmin, CourseUser } from "../../types/userTypes";
+import type { UserAdmin } from "../../types/userTypes";
 import type { Course } from "../../types/courseTypes";
+import type { CourseUser } from "../../types/userTypes";
 
 interface EnrollmentModalProps {
   isOpen: boolean;
@@ -21,21 +22,21 @@ const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  // Hàm lấy dữ liệu
   const fetchEnrollmentData = async () => {
     if (!user) return;
     setLoading(true);
     try {
-      // 1. Lấy danh sách CHƯA ghi danh
+      // Lấy danh sách khóa học CHƯA ghi danh
       const resUnreg = await userService.getUnregisteredCourses(user.taiKhoan);
       setUnregisteredCourses(resUnreg.data);
 
-      // 2. SỬA: Gọi hàm getRegisteredCourses thay vì getUserDetail
+      // Lấy danh sách khóa học ĐÃ ghi danh
       const resReg = await userService.getRegisteredCourses(user.taiKhoan);
-      // API này trả về mảng trực tiếp, không cần .chiTietKhoaHocGhiDanh
       setRegisteredCourses(resReg.data);
     } catch (error) {
       console.error(error);
-      // Không cần báo lỗi 404 nếu user chưa có khóa học nào
+      message.error("Lỗi tải dữ liệu ghi danh");
     } finally {
       setLoading(false);
     }
@@ -48,40 +49,43 @@ const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
     }
   }, [isOpen, user]);
 
+  // Xử lý Ghi danh
   const handleRegister = async () => {
-    if (!selectedCourseId || !user) return;
+    if (!user || !selectedCourseId) return;
     try {
       await userService.registerCourse({
         maKhoaHoc: selectedCourseId,
         taiKhoan: user.taiKhoan,
       });
-      message.success("Ghi danh thành công!");
+      message.success("Ghi danh thành công");
       fetchEnrollmentData();
       setSelectedCourseId(null);
     } catch (error: any) {
-      message.error(error.response?.data || "Ghi danh thất bại!");
+      message.error(error.response?.data || "Ghi danh thất bại");
     }
   };
 
-  const handleCancel = async (maKhoaHoc: string) => {
+  // Xử lý Hủy ghi danh
+  const handleDelete = async (courseId: string) => {
     if (!user) return;
     try {
-      await userService.cancelCourse({
-        maKhoaHoc: maKhoaHoc,
+      await userService.cancelRegistration({
+        maKhoaHoc: courseId,
         taiKhoan: user.taiKhoan,
       });
-      message.success("Hủy ghi danh thành công!");
+      message.success("Hủy ghi danh thành công");
       fetchEnrollmentData();
     } catch (error: any) {
-      message.error(error.response?.data || "Hủy thất bại!");
+      message.error(error.response?.data || "Hủy thất bại");
     }
   };
 
   const columns = [
     {
-      title: "STT",
-      key: "stt",
-      render: (_: any, __: any, index: number) => index + 1,
+      title: "Mã KH",
+      dataIndex: "maKhoaHoc",
+      key: "maKhoaHoc",
+      width: 100,
     },
     {
       title: "Tên khóa học",
@@ -89,22 +93,19 @@ const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
       key: "tenKhoaHoc",
     },
     {
-      title: "Trạng thái", // Sửa header cho rõ nghĩa
-      key: "status",
-      render: () => <Tag color="green">Đã ghi danh</Tag>,
-    },
-    {
-      title: "Thao tác",
+      title: "Hành động",
       key: "action",
+      width: 100,
       render: (_: any, record: CourseUser) => (
         <Popconfirm
-          title="Hủy ghi danh?"
-          onConfirm={() => handleCancel(record.maKhoaHoc)}
-          okText="Đồng ý"
+          title="Bạn chắc chắn muốn hủy ghi danh?"
+          onConfirm={() => handleDelete(record.maKhoaHoc)}
+          okText="Có"
           cancelText="Không"
-          okButtonProps={{ danger: true }}
         >
-          <Button danger size="small" icon={<DeleteOutlined />} />
+          <Button danger icon={<DeleteOutlined />} size="small">
+            Hủy
+          </Button>
         </Popconfirm>
       ),
     },
@@ -131,6 +132,11 @@ const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
               optionFilterProp="children"
               value={selectedCourseId}
               onChange={(val) => setSelectedCourseId(val)}
+              filterOption={(input, option) =>
+                (String(option?.children) ?? "")
+                  .toLowerCase()
+                  .includes(input.toLowerCase())
+              }
             >
               {unregisteredCourses.map((course) => (
                 <Select.Option key={course.maKhoaHoc} value={course.maKhoaHoc}>
@@ -148,6 +154,7 @@ const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
           </Button>
         </div>
 
+        {/* Bảng danh sách đã ghi danh */}
         <div>
           <h3 className="text-lg font-medium mb-3">Khóa học đã ghi danh</h3>
           <Table

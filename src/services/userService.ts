@@ -1,68 +1,82 @@
 import { http } from "./axiosConfig";
-import type { UserAdmin, UserProfile } from "../types/userTypes";
-import type { Course } from "../types/courseTypes";
-import type { CourseUser } from "../types/userTypes";
+import type { UserAdmin, UserInfo, CourseUser } from "../types/userTypes";
 import type { RegisterPayload } from "../types/authTypes";
-import RegisterPage from "../pages/Auth/RegisterPage";
+import type { Course } from "../types/courseTypes";
 
 export const userService = {
+  getUserInfo: () => {
+    return http.post<UserInfo>("/QuanLyNguoiDung/ThongTinTaiKhoan");
+  },
+
+  updateUserInfo: (data: any) => {
+    return http.put("/QuanLyNguoiDung/CapNhatThongTinNguoiDung", data);
+  },
+
   getUserList: () => {
-    // Lấy danh sách người dùng
     return http.get<UserAdmin[]>(
-      `/QuanLyNguoiDung/LayDanhSachNguoiDung?MaNhom=GP01`
+      "/QuanLyNguoiDung/LayDanhSachNguoiDung?MaNhom=GP01",
     );
   },
 
-  // Tìm kiếm người dùng
   searchUser: (tuKhoa: string) => {
     return http.get<UserAdmin[]>(
-      `/QuanLyNguoiDung/TimKiemNguoiDung?MaNhom=GP01&tuKhoa=${tuKhoa}`
+      `/QuanLyNguoiDung/TimKiemNguoiDung?MaNhom=GP01&tuKhoa=${tuKhoa}`,
     );
   },
 
-  // Xóa người dùng
   deleteUser: (taiKhoan: string) => {
     return http.delete(`/QuanLyNguoiDung/XoaNguoiDung?TaiKhoan=${taiKhoan}`);
   },
 
-  // Thêm người dùng
   addUser: (payload: RegisterPayload) => {
-    return http.post(`/QuanLyNguoiDung/ThemNguoiDung`, payload);
+    return http.post("/QuanLyNguoiDung/ThemNguoiDung", payload);
   },
 
-  // Cập nhật thông tin người dùng
-  updateUser: (payload: UserAdmin) => {
-    return http.put(`/QuanLyNguoiDung/CapNhatThongTinNguoiDung`, payload);
+  updateUser: (payload: any) => {
+    return http.put("/QuanLyNguoiDung/CapNhatThongTinNguoiDung", payload);
   },
 
-  getUserDetail: (taiKhoan: string) => {
-    return http.post<UserProfile>(
-      `/QuanLyNguoiDung/LayThongTinNguoiDung?taiKhoan=${taiKhoan}`
-    );
+  registerCourse: (data: { maKhoaHoc: string; taiKhoan: string }) => {
+    return http.post("/QuanLyKhoaHoc/GhiDanhKhoaHoc", data);
   },
+
+  cancelRegistration: (data: { maKhoaHoc: string; taiKhoan: string }) => {
+    return http.post("/QuanLyKhoaHoc/HuyGhiDanh", data);
+  },
+
   getUnregisteredCourses: (taiKhoan: string) => {
     return http.post<Course[]>(
-      `/QuanLyNguoiDung/LayDanhSachKhoaHocChuaGhiDanh?TaiKhoan=${taiKhoan}`
+      `/QuanLyNguoiDung/LayDanhSachKhoaHocChuaGhiDanh?TaiKhoan=${taiKhoan}`,
     );
   },
+
   getRegisteredCourses: (taiKhoan: string) => {
     return http.post<CourseUser[]>(
       "/QuanLyNguoiDung/LayDanhSachKhoaHocDaXetDuyet",
-      { taiKhoan: taiKhoan }
+      {
+        taiKhoan: taiKhoan,
+      },
     );
   },
-  registerCourse: (payload: { maKhoaHoc: string; taiKhoan: string }) => {
-    return http.post("/QuanLyKhoaHoc/GhiDanhKhoaHoc", payload);
+
+  getApprovedCourses: (taiKhoan: string) => {
+    return http.post<CourseUser[]>(
+      "/QuanLyNguoiDung/LayDanhSachKhoaHocDaXetDuyet",
+      { taiKhoan },
+    );
   },
-  cancelCourse: (payload: { maKhoaHoc: string; taiKhoan: string }) => {
-    return http.post("/QuanLyKhoaHoc/HuyGhiDanh", payload);
-  },
+
   getUnenrolledUsers: (maKhoaHoc: string) => {
     return http.post<UserAdmin[]>(
       "/QuanLyNguoiDung/LayDanhSachNguoiDungChuaGhiDanh",
-      {
-        maKhoaHoc: maKhoaHoc,
-      }
+      { maKhoaHoc },
+    );
+  },
+
+  getEnrolledStudents: (maKhoaHoc: string) => {
+    return http.post<UserAdmin[]>(
+      "/QuanLyNguoiDung/LayDanhSachHocVienKhoaHoc",
+      { maKhoaHoc },
     );
   },
 };

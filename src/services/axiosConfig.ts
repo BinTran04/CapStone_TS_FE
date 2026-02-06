@@ -25,7 +25,7 @@ http.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Interceptor Response: Xử lý dữ liệu trả về hoặc lỗi
@@ -38,5 +38,5 @@ http.interceptors.response.use(
       console.log("Hết phiên đăng nhập hoặc không có quyền truy cập");
     }
     return Promise.reject(error);
-  }
+  },
 );

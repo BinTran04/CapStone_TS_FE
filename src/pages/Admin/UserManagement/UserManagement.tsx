@@ -26,7 +26,6 @@ const UserManagement: React.FC = () => {
   const [selectedUserForEnroll, setSelectedUserForEnroll] =
     useState<UserAdmin | null>(null);
 
-  // Hook useDebounce để trì hoãn việc gọi API search
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   // Hàm gọi API lấy danh sách
@@ -71,7 +70,6 @@ const UserManagement: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  //
   const columns: ColumnsType<UserAdmin> = [
     {
       title: "STT",
@@ -152,12 +150,12 @@ const UserManagement: React.FC = () => {
     <div className="p-4">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-800">Quản Lý Người Dùng</h2>
-        {/* Nút Thêm -> Gọi handleOpenAdd */}
         <Button
           type="primary"
           icon={<UserAddOutlined />}
           size="large"
           onClick={handleOpenAdd}
+          style={{ backgroundColor: "#1E90FF", borderColor: "#1E90FF" }}
         >
           Thêm người dùng
         </Button>

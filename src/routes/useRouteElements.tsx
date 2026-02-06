@@ -1,4 +1,3 @@
-// Tất cả logic điều hướng wireframe.
 import { useRoutes } from "react-router-dom";
 
 // Layouts
@@ -14,6 +13,8 @@ import HomePage from "../pages/Client/HomePage/HomePage";
 import CourseDetails from "../pages/Client/CourseDetails/CourseDetails";
 import SearchPage from "../pages/Client/SearchPage/SearchPage";
 import UserProfile from "../pages/Client/UserProfile/UserProfile";
+import LearningPage from "../pages/Client/LearningPage/LearningPage";
+import CartPage from "../pages/Client/CartPage/CartPage";
 
 // Admin Pages
 import Dashboard from "../pages/Admin/Dashboard/Dashboard";
@@ -38,25 +39,26 @@ const useRouteElements = () => {
           element: <HomePage />,
         },
         {
-          path: "danhmuc/:maDanhMuc",
-          element: <HomePage />,
-        },
-        {
-          path: "chitiet/:maKhoahoc",
+          path: "detail/:id",
           element: <CourseDetails />,
         },
         {
-          path: "tim-kiem",
+          path: "search",
           element: <SearchPage />,
         },
         {
-          path: "thong-tin-ca-nhan",
+          path: "profile",
           element: <UserProfile />,
         },
+        {
+          path: "/learning/:id",
+          element: <LearningPage />,
+        },
+        { path: "cart", element: <CartPage /> },
       ],
     },
 
-    // 2. Route Admin (Được bảo vệ bởi AdminGuard)
+    // Route cho Admin (Có bảo vệ bằng AdminGuard)
     {
       path: "/admin",
       element: <AdminGuard />,
@@ -73,31 +75,31 @@ const useRouteElements = () => {
               element: <Dashboard />,
             },
             {
-              path: "quan-ly-nguoi-dung",
+              path: "users",
               element: <UserManagement />,
             },
             {
-              path: "quan-ly-khoa-hoc",
+              path: "courses",
               element: <CourseManagement />,
             },
             {
-              path: "quan-ly-giao-dich",
+              path: "transactions",
               element: <TransactionManagement />,
             },
             {
-              path: "bao-cao",
+              path: "analytics",
               element: <ReportAnalytics />,
             },
             {
-              path: "cai-dat",
+              path: "settings",
               element: <SystemSettings />,
             },
             {
-              path: "quan-ly-giang-vien",
+              path: "instructors",
               element: <InstructorManagement />,
             },
             {
-              path: "phan-quyen",
+              path: "roles",
               element: <RoleManagement />,
             },
           ],
@@ -115,9 +117,12 @@ const useRouteElements = () => {
     },
     {
       path: "*",
-      element: <div className="p-10 text-center">404 - Not Found</div>,
+      element: (
+        <div className="p-10 text-center">404 - Trang không tồn tại</div>
+      ),
     },
   ]);
+
   return routeElements;
 };
 

@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
   return (
     <footer className="bg-gray-900 text-gray-300 py-12 border-t border-gray-800 font-sans">
       <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        {/* Cột 1: Thông tin chung */}
+        {/* Thông tin chung */}
         <div>
           <Link to="/" className="flex items-center gap-2 mb-4 text-white">
             <div className="w-8 h-8 bg-indigo-600 rounded flex items-center justify-center font-bold text-lg">
@@ -36,7 +36,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* Cột 2: Liên kết nhanh */}
+        {/* Liên kết nhanh */}
         <div>
           <h3 className="text-white font-bold text-lg mb-4">Liên kết</h3>
           <ul className="space-y-2 text-sm">
@@ -72,7 +72,7 @@ const Footer: React.FC = () => {
           </ul>
         </div>
 
-        {/* Cột 3: Khóa học nổi bật */}
+        {/* Khóa học nổi bật */}
         <div>
           <h3 className="text-white font-bold text-lg mb-4">Khóa học</h3>
           <ul className="space-y-2 text-sm">
@@ -99,7 +99,7 @@ const Footer: React.FC = () => {
           </ul>
         </div>
 
-        {/* Cột 4: Liên hệ */}
+        {/* Liên hệ */}
         <div>
           <h3 className="text-white font-bold text-lg mb-4">Liên hệ</h3>
           <ul className="space-y-3 text-sm">

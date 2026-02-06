@@ -31,14 +31,15 @@ const CourseManagement: React.FC = () => {
   const fetchCourses = async () => {
     setLoading(true);
     try {
-      // API search khóa học và list khóa học chung 1 logic lấy list rồi filter client hoặc api search riêng
-      // Ở đây gọi list rồi filter tạm
+      // API search khóa học và list khóa học chung 1 logic lấy list rồi filter client
       const res = await courseService.getCourseList();
       let data = res.data;
 
       if (debouncedSearchTerm) {
         data = data.filter((c) =>
-          c.tenKhoaHoc.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+          c.tenKhoaHoc
+            .toLowerCase()
+            .includes(debouncedSearchTerm.toLowerCase()),
         );
       }
       setCourses(data);
@@ -124,6 +125,7 @@ const CourseManagement: React.FC = () => {
             setSelectedCourse(null);
             setIsModalOpen(true);
           }}
+          style={{ backgroundColor: "#1E90FF", borderColor: "#1E90FF" }}
         >
           Thêm khóa học
         </Button>

@@ -4,13 +4,21 @@ import { useAppDispatch, useAppSelector } from "../../../store/store";
 import { logout } from "../../../store/slices/authSlice";
 import { courseService } from "../../../services/courseService";
 import type { CourseCategory } from "../../../types/courseTypes";
-import { message, Dropdown, type MenuProps, Space, Button } from "antd";
-import { DownOutlined, UserOutlined, LoginOutlined } from "@ant-design/icons";
+import { message, Dropdown, type MenuProps, Space, Button, Badge } from "antd"; // Thêm Badge
+import {
+  DownOutlined,
+  UserOutlined,
+  LoginOutlined,
+  ShoppingCartOutlined,
+} from "@ant-design/icons";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { currentUser } = useAppSelector((state) => state.auth);
+
+  // --- Lấy số lượng giỏ hàng từ Redux ---
+  const { cartItems } = useAppSelector((state) => state.cart);
 
   const [categories, setCategories] = useState<CourseCategory[]>([]);
 
@@ -35,31 +43,21 @@ const Header: React.FC = () => {
   };
 
   // Dropdown Menu Danh mục
-  const categoryItems: MenuProps["items"] = categories.map((cat) => ({
-    key: cat.maDanhMucKhoahoc,
-    label: (
-      <Link to={`/danhmuc/${cat.maDanhMucKhoahoc}`}>
-        {cat.tenDanhMucKhoaHoc}
-      </Link>
-    ),
-  }));
+  const categoryItems: MenuProps["items"] = categories.map((cat, index) => {
+    const catName = cat.tenDanhMuc || cat.tenDanhMucKhoaHoc || "Danh mục khác";
+    const catId = cat.maDanhMuc || cat.maDanhMucKhoahoc || `cat_${index}`;
+    return {
+      key: catId,
+      label: <Link to={`/search?category=${catId}`}>{catName}</Link>,
+    };
+  });
 
+  // Dropdown Menu User
   const userItems: MenuProps["items"] = [
     {
-      key: "profile",
-      label: <Link to="/thong-tin-ca-nhan">Thông tin cá nhân</Link>,
+      key: "info",
+      label: <Link to="/profile">Thông tin cá nhân</Link>,
       icon: <UserOutlined />,
-    },
-    {
-      key: "admin",
-      label:
-        currentUser?.maLoaiNguoiDung === "GV" ? (
-          <Link to="/admin">Trang quản trị</Link>
-        ) : null,
-      disabled: currentUser?.maLoaiNguoiDung !== "GV",
-    },
-    {
-      type: "divider",
     },
     {
       key: "logout",
@@ -71,67 +69,45 @@ const Header: React.FC = () => {
   ];
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50 font-sans">
-      <div className="container mx-auto px-4 h-16 flex justify-between items-center">
-        {/* 1. Logo */}
-        <Link to="/" className="flex items-center gap-2 group">
-          <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xl group-hover:rotate-12 transition-transform">
-            C
-          </div>
-          <span className="text-2xl font-bold text-gray-800 tracking-tight">
-            CyberSoft
-          </span>
+    <header className="bg-white shadow-md sticky top-0 z-50 h-16 flex items-center font-sans">
+      <div className="container mx-auto px-4 flex justify-between items-center h-full">
+        {/* LOGO */}
+        <Link to="/" className="flex items-center">
+          <img
+            src="https://cyberlearn.vn/wp-content/uploads/2020/03/cyberlearn-min-new-opt2.png"
+            alt="Logo"
+            className="h-8 sm:h-9 object-contain transform hover:scale-105 transition-transform duration-300"
+          />
         </Link>
 
-        {/* 2. Navigation Menu (Desktop) */}
-        <div className="hidden md:flex items-center space-x-8">
-          {/* Dropdown Danh mục */}
-          <Dropdown
-            menu={{ items: categoryItems }}
-            trigger={["click", "hover"]}
-          >
-            <a
-              onClick={(e) => e.preventDefault()}
-              className="text-gray-600 hover:text-indigo-600 font-medium cursor-pointer transition-colors flex items-center gap-1"
-            >
-              <i className="fa fa-th-large"></i> Danh mục{" "}
-              <DownOutlined style={{ fontSize: "10px" }} />
-            </a>
+        {/* DANH MỤC */}
+        <div className="hidden md:flex items-center ml-6 uppercase font-semibold text-gray-600 hover:text-indigo-600 transition-colors cursor-pointer text-sm tracking-wide">
+          <Dropdown menu={{ items: categoryItems }} trigger={["hover"]}>
+            <Space>
+              <span className="hover:text-indigo-600 transition-colors">
+                Danh mục
+              </span>
+              <DownOutlined className="text-xs" />
+            </Space>
           </Dropdown>
-
-          {/* Static Links */}
-          <Link
-            to="/khoa-hoc"
-            className="text-gray-600 hover:text-indigo-600 font-medium transition-colors"
-          >
-            Khóa học
-          </Link>
-          <Link
-            to="/blog"
-            className="text-gray-600 hover:text-indigo-600 font-medium transition-colors"
-          >
-            Blog
-          </Link>
-          <Link
-            to="/about"
-            className="text-gray-600 hover:text-indigo-600 font-medium transition-colors"
-          >
-            Về chúng tôi
-          </Link>
         </div>
 
-        {/* 3. Search & Auth */}
-        <div className="flex items-center space-x-4">
-          <div className="hidden lg:block relative group">
-            <input
-              type="text"
-              placeholder="Tìm khóa học..."
-              className="border border-gray-200 bg-gray-50 rounded-full py-2 px-4 pl-10 text-sm focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100 w-64 transition-all"
-            />
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500">
-              🔍
-            </span>
-          </div>
+        <div className="hidden md:flex flex-1 mx-8 max-w-xl relative"></div>
+
+        {/* USER ACTIONS */}
+        <div className="flex items-center gap-4">
+          <Link to="/cart">
+            <div className="mr-2 cursor-pointer hover:bg-gray-100 p-2 rounded-full transition-colors relative flex items-center justify-center">
+              <Badge
+                count={cartItems.length}
+                showZero
+                size="small"
+                offset={[0, 0]}
+              >
+                <ShoppingCartOutlined className="text-2xl text-gray-600" />
+              </Badge>
+            </div>
+          </Link>
 
           {currentUser ? (
             <Dropdown menu={{ items: userItems }} placement="bottomRight" arrow>

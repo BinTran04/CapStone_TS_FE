@@ -30,7 +30,6 @@ import {
 const { Title, Text } = Typography;
 
 const ReportAnalytics: React.FC = () => {
-  // Cấu hình cột cho bảng Top Học Viên
   const studentColumns = [
     {
       title: "Học viên",
@@ -77,9 +76,8 @@ const ReportAnalytics: React.FC = () => {
         </Tag>
       </div>
 
-      {/* DOANH THU & HIỆU QUẢ KHUYẾN MÃI */}
+      {/* DOANH THU VÀ HIỆU QUẢ KHUYẾN MÃI */}
       <Row gutter={16}>
-        {/* Doanh thu theo khóa học */}
         <Col span={12}>
           <Card
             title="Doanh thu theo Khóa học (Top 5)"
@@ -171,9 +169,8 @@ const ReportAnalytics: React.FC = () => {
         </Col>
       </Row>
 
-      {/* TỶ LỆ HOÀN THÀNH & TOP HỌC VIÊN */}
+      {/* TỶ LỆ HOÀN THÀNH VÀ TOP HỌC VIÊN */}
       <Row gutter={16}>
-        {/* Tỷ lệ hoàn thành */}
         <Col span={10}>
           <Card
             title="Tỷ lệ hoàn thành khóa học"
@@ -193,8 +190,8 @@ const ReportAnalytics: React.FC = () => {
                       item.rate > 80
                         ? "#52c41a"
                         : item.rate > 60
-                        ? "#1890ff"
-                        : "#faad14"
+                          ? "#1890ff"
+                          : "#faad14"
                     }
                     trailColor="#f0f0f0"
                   />
@@ -209,7 +206,6 @@ const ReportAnalytics: React.FC = () => {
           </Card>
         </Col>
 
-        {/* Học viên tiêu biểu */}
         <Col span={14}>
           <Card
             title={
