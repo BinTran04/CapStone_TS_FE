@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import { Outlet, useNavigate, useLocation, Link } from "react-router-dom";
 import {
   Layout,
   Menu,
@@ -11,6 +11,7 @@ import {
   Input,
   Badge,
   Button,
+  Drawer
 } from "antd";
 import {
   UserOutlined,
@@ -27,6 +28,7 @@ import {
   ToolOutlined,
   TeamOutlined,
   SafetyCertificateOutlined,
+  MenuOutlined
 } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { logout } from "../../store/slices/authSlice";
@@ -116,6 +118,8 @@ const AdminLayout: React.FC = () => {
     },
   ];
 
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+
   return (
     <ConfigProvider
       theme={{
@@ -126,21 +130,46 @@ const AdminLayout: React.FC = () => {
       }}
     >
       <Layout className="min-h-screen">
+        <Drawer
+          title={
+            <span className={isDarkMode ? "text-white" : "text-indigo-600"}>
+              CyberSoft
+            </span>
+          }
+          placement="left"
+          onClose={() => setIsDrawerVisible(false)}
+          open={isDrawerVisible}
+          width={250}
+          styles={{ body: { padding: 0 } }}
+          className="lg:hidden" 
+        >
+          <Menu
+            theme={isDarkMode ? "dark" : "light"}
+            mode="inline"
+            selectedKeys={[location.pathname]}
+            items={menuItems}
+            onClick={() => setIsDrawerVisible(false)}
+          />
+        </Drawer>
         <Sider
           width={250}
           theme={isDarkMode ? "dark" : "light"}
           collapsible
           breakpoint="lg"
-          className={isDarkMode ? "" : "border-r border-gray-200"}
+          collapsedWidth="0" 
+          trigger={null} 
+          className={`hidden lg:block ${isDarkMode ? "" : "border-r border-gray-200"}`}
         >
           <div className="h-16 flex items-center justify-center border-b border-gray-700/10">
-            <span
-              className={`font-bold text-xl tracking-wider ${
-                isDarkMode ? "text-white" : "text-indigo-600"
-              }`}
-            >
-              CyberSoft
-            </span>
+            <Link to="/">
+              <span
+                className={`font-bold text-xl tracking-wider ${
+                  isDarkMode ? "text-white" : "text-indigo-600"
+                }`}
+              >
+                CyberSoft
+              </span>
+            </Link>
           </div>
           <Menu
             theme={isDarkMode ? "dark" : "light"}
@@ -154,10 +183,16 @@ const AdminLayout: React.FC = () => {
         <Layout>
           {/* Header */}
           <Header
-            className="p-0 shadow-sm flex justify-between items-center px-6"
+            className="p-0 shadow-sm flex justify-between items-center px-4 md:px-6"
             style={{ background: isDarkMode ? "#001529" : "#fff" }}
           >
-            <div className="w-1/3">
+            <Button
+              type="text"
+              className="lg:hidden mr-2 flex items-center justify-center" // Chỉ hiện trên mobile
+              icon={<MenuOutlined style={{ fontSize: '18px' }} />}
+              onClick={() => setIsDrawerVisible(true)}
+            />
+            <div className="hidden sm:block w-full max-w-[300px]">
               <Input
                 prefix={<SearchOutlined className="text-gray-400" />}
                 placeholder="Tìm kiếm bất cứ thứ gì..."
@@ -166,54 +201,34 @@ const AdminLayout: React.FC = () => {
               />
             </div>
 
-            {/* Các công cụ góc phải */}
-            <div className="flex items-center space-x-6">
-              {/* Nút Dark Mode */}
+            {/* CÁC CÔNG CỤ GÓC PHẢI */}
+            <div className="flex items-center space-x-3 md:space-x-6">
               <Button
                 type="text"
-                icon={
-                  isDarkMode ? (
-                    <SunOutlined className="text-yellow-400" />
-                  ) : (
-                    <MoonOutlined />
-                  )
-                }
+                icon={isDarkMode ? <SunOutlined className="text-yellow-400" /> : <MoonOutlined />}
                 onClick={() => setIsDarkMode(!isDarkMode)}
               />
-
-              {/* Thông báo */}
-              <Badge count={5} size="small">
-                <Button
-                  type="text"
-                  icon={<BellOutlined style={{ fontSize: 20 }} />}
-                />
+              
+              {/* Ẩn bớt badge thông báo trên mobile nhỏ để tránh chật chội */}
+              <Badge count={5} size="small" className="hidden xs:block">
+                <Button type="text" icon={<BellOutlined style={{ fontSize: 20 }} />} />
               </Badge>
 
-              {/* Profile User */}
-              <div className="flex items-center cursor-pointer hover:opacity-80 transition-opacity">
-                <Dropdown menu={userMenu} placement="bottomRight" arrow>
-                  <div className="flex items-center">
-                    <Avatar
-                      size="large"
-                      className="bg-gradient-to-r from-indigo-500 to-purple-500"
-                      icon={<UserOutlined />}
-                    />
-                    <span
-                      className={`ml-3 font-medium ${
-                        isDarkMode ? "text-gray-300" : "text-gray-700"
-                      }`}
-                    >
-                      {currentUser?.hoTen || "Admin"}
-                    </span>
-                  </div>
-                </Dropdown>
-              </div>
+              <Dropdown menu={userMenu} placement="bottomRight" arrow>
+                <div className="flex items-center cursor-pointer">
+                  <Avatar className="bg-gradient-to-r from-indigo-500 to-purple-500" icon={<UserOutlined />} />
+                  {/* Ẩn tên User trên mobile nhỏ, chỉ hiện trên màn hình md trở lên */}
+                  <span className={`ml-2 font-medium hidden md:inline-block ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
+                    {currentUser?.hoTen || "Admin"}
+                  </span>
+                </div>
+              </Dropdown>
             </div>
           </Header>
 
-          <Content className="m-6">
+          <Content className="m-2 sm:m-4 lg:m-6">
             <div
-              className={`p-6 rounded-lg shadow-sm min-h-[80vh] ${
+              className={`p-4 sm:p-6 rounded-lg shadow-sm min-h-[80vh] ${
                 isDarkMode ? "bg-[#141414]" : "bg-white"
               }`}
             >

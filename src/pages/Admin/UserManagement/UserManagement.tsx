@@ -137,7 +137,7 @@ const UserManagement: React.FC = () => {
             onConfirm={() => handleDelete(record.taiKhoan)}
             okText="Xóa"
             cancelText="Hủy"
-            okButtonProps={{ danger: true }}
+            okButtonProps={{ style: { backgroundColor: '#ff4d4f', borderColor: '#ff4d4f' } }}
           >
             <Button danger size="small" icon={<DeleteOutlined />}></Button>
           </Popconfirm>
@@ -149,7 +149,7 @@ const UserManagement: React.FC = () => {
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Quản Lý Người Dùng</h2>
+        <h2 className="text-2xl font-bold">Quản Lý Người Dùng</h2>
         <Button
           type="primary"
           icon={<UserAddOutlined />}
@@ -178,6 +178,7 @@ const UserManagement: React.FC = () => {
         rowKey="taiKhoan"
         loading={loading}
         pagination={{ pageSize: 10 }}
+        scroll={{ x: 'max-content' }}
         bordered
       />
 
