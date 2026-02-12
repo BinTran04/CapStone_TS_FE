@@ -1,5 +1,17 @@
 # React + TypeScript + Vite
 
+
+THÀNH VIÊN TASK
+Quốc Nhựt Trang chủ
+Trang danh sách khóa học, tìm kiếm khóa học
+Trang chi tiết khóa học
+Trang thông tin cá nhân học viên
+Trang đăng nhập / Đăng ký
+Admin: Chức năng ghi danh, các trang dashboard, setting, analytics, roles, transactions
+Kim Cương Admin: Trang quản lý người dùng
+Admin: Trang quản lý khóa học
+Responsive
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
