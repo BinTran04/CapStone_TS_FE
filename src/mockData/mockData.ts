@@ -233,7 +233,23 @@ export const reviews = [
     name: "Hoàng Anh",
     role: "Học viên",
     avatar: "https://i.pravatar.cc/150?u=4",
-    content: "Khóa học rất thực tế, giảng viên dạy dễ hiểu.",
+    content: "Chất lượng giảng dạy rất tốt",
+    rating: 5,
+  },
+  {
+    id: 5,
+    name: "Bảo Long",
+    role: "Học viên",
+    avatar: "https://i.pravatar.cc/150?u=5",
+    content: "Giáo án đầy đủ, dễ hiểu.",
+    rating: 5,
+  },
+  {
+    id: 6,
+    name: "Trần Tuyết Mai",
+    role: "Học viên",
+    avatar: "https://i.pravatar.cc/150?u=6",
+    content: "Giáo viên dạy tốt, nhiệt tình",
     rating: 5,
   },
 ];
@@ -243,21 +259,21 @@ export const blogs = [
     id: 1,
     title: "Lộ trình Frontend 2026",
     image:
-      "https://media.techmaster.vn/api/static/bub3enc51co7s932dsk0/Z6v6s42L",
+      "https://cdn-main.28tech.com.vn/media/anh-khoa-hoc/anh_dai_dien_khoa_hoc/l%E1%BA%ADp%20tr%C3%ACnh%20%20web%20front-end.png",
     date: "10 Jan 2026",
   },
   {
     id: 2,
     title: "Tại sao nên học ReactJS?",
     image:
-      "https://nordiccoder.com/app/uploads/2020/01/reactjs-la-gi-1-scaled.jpg",
+      "https://i.ytimg.com/vi/x0fSBAgBrOQ/maxresdefault.jpg",
     date: "05 Jan 2026",
   },
   {
     id: 3,
     title: "Tips phỏng vấn IT hiệu quả",
     image:
-      "https://topdev.vn/blog/wp-content/uploads/2019/06/cau-hoi-phong-van-it.png",
+      "https://unica.vn/media/imagesck/1620802718_ky-nnag-phong-van-xin-viec.jpg?v=1620802718",
     date: "01 Jan 2026",
   },
 ];

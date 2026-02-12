@@ -145,29 +145,31 @@ const HomePage: React.FC = () => {
 
           {/* Tab Danh mục */}
           <div className="flex justify-center mb-8">
-            <Tabs
-              defaultActiveKey="ALL"
-              activeKey={activeTab}
-              onChange={handleTabChange}
-              type="card"
-              size="large"
-              items={[
-                { key: "ALL", label: "Tất cả khoá học" },
-                // Map danh sách danh mục từ API
-                ...categories.map((cat, index) => {
-                  const uniqueKey =
-                    cat.maDanhMuc || cat.maDanhMucKhoahoc || `cat_${index}`;
-                  const labelName =
-                    cat.tenDanhMuc || cat.tenDanhMucKhoaHoc || "Danh mục";
+            <div className="w-full overflow-x-auto pb-4 scrollbar-hide">
+              <Tabs
+                defaultActiveKey="ALL"
+                activeKey={activeTab}
+                onChange={handleTabChange}
+                type="card"
+                size="large"
+                items={[
+                  { key: "ALL", label: "Tất cả khoá học" },
+                  // Map danh sách danh mục từ API
+                  ...categories.map((cat, index) => {
+                    const uniqueKey =
+                      cat.maDanhMuc || cat.maDanhMucKhoahoc || `cat_${index}`;
+                    const labelName =
+                      cat.tenDanhMuc || cat.tenDanhMucKhoaHoc || "Danh mục";
 
-                  return {
-                    key: uniqueKey,
-                    label: labelName,
-                  };
-                }),
-              ]}
-              className="custom-tabs"
-            />
+                    return {
+                      key: uniqueKey,
+                      label: labelName,
+                    };
+                  }),
+                ]}
+                className="custom-tabs"
+              />
+            </div>
           </div>
 
           {/* Grid Khóa học */}
