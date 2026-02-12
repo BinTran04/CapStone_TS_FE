@@ -14,19 +14,13 @@ import {
   message,
   Tag,
   Modal,
-  Tabs,
-  Row,
-  Col,
   Tooltip,
 } from "antd";
 import {
   GlobalOutlined,
-  FieldTimeOutlined,
   SafetyCertificateOutlined,
   PlayCircleOutlined,
   CheckCircleFilled,
-  BankOutlined,
-  CreditCardOutlined,
   CopyOutlined,
   StarFilled,
   UserOutlined,
@@ -56,7 +50,6 @@ const CourseDetails: React.FC = () => {
 
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [loadingPay, setLoadingPay] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState("BANK");
 
   useEffect(() => {
     const fetchCourseDetail = async () => {

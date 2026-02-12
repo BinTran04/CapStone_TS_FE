@@ -56,14 +56,6 @@ const HomePage: React.FC = () => {
     }
   };
 
-  const tabItems = [
-    { key: "ALL", label: "Tất cả khóa học" },
-    ...categories.map((cat) => ({
-      key: cat.maDanhMucKhoahoc,
-      label: cat.tenDanhMucKhoaHoc,
-    })),
-  ];
-
   return (
     <div className="bg-white min-h-screen font-sans">
       {/* HERO BANNER */}

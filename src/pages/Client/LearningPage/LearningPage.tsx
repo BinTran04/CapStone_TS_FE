@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Layout,
   Typography,
@@ -18,7 +18,6 @@ import {
   MenuUnfoldOutlined,
   LeftOutlined,
   RightOutlined,
-  ProfileOutlined,
   QuestionCircleOutlined,
   FileTextOutlined,
 } from "@ant-design/icons";
@@ -44,7 +43,7 @@ const LearningPage: React.FC = () => {
 
   const [completedLessons, setCompletedLessons] = useState<string[]>([]);
   const [collapsed, setCollapsed] = useState(false);
-  const [autoNext, setAutoNext] = useState(true);
+  const [autoNext] = useState(true);
 
   // LOGIC TÍNH TOÁN BÀI TRƯỚC / BÀI SAU
   const allLessons = useMemo(() => {
