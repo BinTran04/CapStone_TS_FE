@@ -103,8 +103,13 @@ const CourseManagement: React.FC = () => {
             }}
           />
           <Popconfirm
-            title="Xóa?"
+            title="Xóa khóa học?"
             onConfirm={() => handleDelete(record.maKhoaHoc)}
+            okText="Xóa"
+            cancelText="Hủy"
+            okButtonProps={{
+              style: { backgroundColor: "#ff4d4f", borderColor: "#ff4d4f" },
+            }}
           >
             <Button danger size="small" icon={<DeleteOutlined />} />
           </Popconfirm>
@@ -144,8 +149,8 @@ const CourseManagement: React.FC = () => {
         dataSource={courses}
         rowKey="maKhoaHoc"
         loading={loading}
-        pagination={{ pageSize: 5 }}
-        scroll={{ x: 1000 }}
+        pagination={{ pageSize: 10 }}
+        scroll={{ x: 'max-content' }}
         bordered
       />
 

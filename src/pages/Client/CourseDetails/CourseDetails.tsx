@@ -209,7 +209,7 @@ const CourseDetails: React.FC = () => {
                 items={[
                   {
                     title: (
-                      <Link to="/" className="text-gray-300 hover:text-white">
+                      <Link to="/" className="!text-white">
                         Trang chủ
                       </Link>
                     ),
@@ -218,7 +218,7 @@ const CourseDetails: React.FC = () => {
                     title: (
                       <Link
                         to="/courses"
-                        className="text-gray-300 hover:text-white"
+                        className="!text-white"
                       >
                         Khóa học
                       </Link>
